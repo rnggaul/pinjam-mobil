@@ -17,7 +17,9 @@ class Divisi extends Model
     /**
      * menentukan kolom mana yang boleh diisi
      */
-    protected $fillable = ['divisi'];
+    protected $fillable = ['nama_divisi'];
 
     protected $primaryKey = 'id_divisi';
+
+    public $timestamps = false;
 }
