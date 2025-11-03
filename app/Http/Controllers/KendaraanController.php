@@ -70,7 +70,6 @@ class KendaraanController extends Controller
         // 1 validasi
         $request->validate([
             'nama_kendaraan' => 'required|string|max:255',
-            'nopol' => 'required|string|max:20|unique:master_kendaraan,nopol,' . $kendaraan->mobil_id . ',mobil_id',
             'jenis_mobil' => 'required|in:Sedan,LCGC,SUV,MPV',
         ]);
 

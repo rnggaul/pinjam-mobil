@@ -23,5 +23,11 @@ class Kendaraan extends Model
         'nama_kendaraan',
         'nopol',
         'jenis_mobil',
+        'KM',
     ];
+
+    public function booking()
+    {
+        return $this->hasMany(Booking::class, 'mobil_id', 'mobil_id');
+    }
 }

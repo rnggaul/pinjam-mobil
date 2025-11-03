@@ -1,65 +1,109 @@
 <x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Cari Ketersediaan Kendaraan') }}
+        </h2>
+    </x-slot>
 
-    <div class="grid grid-cols-3 gap-4">
-        <div class="...">
-            <div class="py-12">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div class="p-6 text-gray-900 ">
-                            <div class="card">
-                                <img src="images/f1.jpg" alt="Mobil 1" style="width:100%" class="w-full h-48 object-cover">
-                                <div class="container">
-                                    <h4><b>John Doe</b></h4>
-                                    <p>Architect & Engineer</p>
-                                </div>
-                                <x-secondary-button>
-                                    {{ __('more') }}
-                                </x-secondary-button>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            
+            {{-- 1. FORM FILTER TANGGAL --}}
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    
+                    {{-- Form ini menggunakan method GET untuk mengirim tanggal ke URL --}}
+                    <form action="{{ route('dashboard') }}" method="GET">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            
+                            {{-- Input Tanggal MULAI (From) --}}
+                            <div>
+                                <x-input-label for="tanggal_mulai" :value="__('Dari Tangga')" />
+                                <input type="date" 
+                                       name="tanggal_mulai" 
+                                       id="tanggal_mulai"
+                                       value="{{ request('tanggal_mulai') }}" {{-- Menjaga nilai filter tetap ada --}}
+                                       class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" 
+                                       required>
+                                <x-input-error :messages="$errors->get('tanggal_mulai')" class="mt-2" />
                             </div>
+
+                            {{-- Input Tanggal SELESAI (To) --}}
+                            <div>
+                                <x-input-label for="tanggal_selesai" :value="__('Sampai Tanggal')" />
+                                <input type="date" 
+                                       name="tanggal_selesai" 
+                                       id="tanggal_selesai"
+                                       value="{{ request('tanggal_selesai') }}" {{-- Menjaga nilai filter tetap ada --}}
+                                       class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" 
+                                       required>
+                                <x-input-error :messages="$errors->get('tanggal_selesai')" class="mt-2" />
+                            </div>
+
+                            {{-- Tombol Submit --}}
+                            <div class="flex items-end">
+                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                    Cari
+                                </button>
+                            </div>
+
                         </div>
-                    </div>
+                    </form>
+
                 </div>
             </div>
-        </div>
-        <div class="...">
-            <div class="py-12">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div class="p-6 text-gray-900 ">
-                            <div class="card">
-                                <img src="images/innova.png" alt="Mobil 1" style="width:100%" class="w-full h-48 object-cover">
-                                <div class="container">
-                                    <h4><b>John Doe</b></h4>
-                                    <p>Architect & Engineer</p>
+
+            {{-- 2. AREA HASIL PENCARIAN --}}
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-6">
+                <div class="p-6 text-gray-900">
+                    <h3 class="font-semibold mb-4 text-lg">Hasil Ketersediaan</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        {{-- 
+                          Looping data kendaraan yang dikirim dari controller
+                          Variabel $kendaraans akan berisi mobil yang tersedia
+                        --}}
+                        @forelse ($kendaraans as $kendaraan)
+                            <div class="border rounded-lg shadow-sm p-4 flex flex-col justify-between">
+                                {{-- Bagian Info Mobil --}}
+                                <div>
+                                
+                                    
+                                    {{-- Info Teks --}}
+                                    <h4 class="font-bold text-xl">{{ $kendaraan->nama_kendaraan }}</h4>
+                                    <p class="text-sm text-gray-600">{{ $kendaraan->nopol }}</p>
+                                    <p class="text-sm text-gray-800">{{ $kendaraan->jenis_mobil }}</p>
                                 </div>
-                                <x-secondary-button>
-                                    {{ __('more') }}
-                                </x-secondary-button>
+                                
+                                {{-- Tombol Booking (Penting untuk langkah selanjutnya) --}}
+                                <form action="{{ route('booking.store') }}" method="POST" class="mt-4">
+                                    @csrf
+                                    {{-- Kita sembunyikan data penting di dalam form --}}
+                                    <input type="hidden" name="mobil_id" value="{{ $kendaraan->mobil_id }}">
+                                    <input type="hidden" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}">
+                                    <input type="hidden" name="tanggal_selesai" value="{{ request('tanggal_selesai') }}">
+                                    
+                                    <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500">
+                                        Booking
+                                    </button>
+                                </form>
                             </div>
-                        </div>
+                        @empty
+                            {{-- Tampilan jika tidak ada hasil --}}
+                            
+                            {{-- Cek apakah user sudah menekan tombol "Cari" --}}
+                            @if (request()->has('tanggal_mulai'))
+                                <p class="col-span-3 text-center text-gray-500">Tidak ada kendaraan yang tersedia pada rentang tanggal tersebut.</p>
+                            @else
+                                <p class="col-span-3 text-center text-gray-500">Silakan pilih rentang tanggal untuk mencari kendaraan.</p>
+                            @endif
+                        @endforelse
                     </div>
+
                 </div>
             </div>
-        </div>
-        <div class="...">
-            <div class="py-12">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div class="p-6 text-gray-900 ">
-                            <div class="card">
-                                <img src="images/truk.jpg" alt="Mobil 1" style="width:100%" class="w-full h-48 object-cover">
-                                <div class="container">
-                                    <h4><b>John Doe</b></h4>
-                                    <p>Architect & Engineer</p>
-                                </div>
-                                <x-secondary-button>
-                                    {{ __('more') }}
-                                </x-secondary-button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
 </x-app-layout>

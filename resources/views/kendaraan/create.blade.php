@@ -31,6 +31,10 @@
                             <label for="nopol" class="block font-medium text-sm text-gray-700">Nomor Polisi</label>
                             <input type="text" name="nopol" id="nopol" value="{{ old('nopol') }}" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required autofocus>
                         </div>
+                        <div>
+                            <label for="KM" class="block font-medium text-sm text-gray-700">KM</label>
+                            <input type="number" name="KM" id="KM" step="0.1" value="{{ old('KM') }}" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required autofocus>
+                        </div>
                         <div class="mt-4">
                             <x-input-label for="jenis_mobil" :value="__('Jenis Mobil')" />
 

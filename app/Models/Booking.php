@@ -13,13 +13,28 @@ class Booking extends Model
 
     protected $primaryKey = 'booking_id';
 
+    public $timestamps = false;
+
+
+    protected $guarded = [];
+
+    // protected $dates = [
+    //     'tanggal_mulai',
+    //     'tanggal_selesai'
+    // ];
+
+    protected $casts = [
+        'tanggal_mulai' => 'datetime',
+        'tanggal_selesai' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function mobil()
+    public function kendaraan()
     {
-        return $this->belongsTo(Mobil::class, 'mobil_id', 'mobil_id');
+        return $this->belongsTo(Kendaraan::class, 'mobil_id', 'mobil_id');
     }
 }

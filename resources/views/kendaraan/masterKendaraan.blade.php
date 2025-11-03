@@ -2,7 +2,9 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Manajemen Kendaraan') }}
+            <a href="{{ route('admin.index') }}" class="hover:underline">
+                {{ __('Manajemen Kendaraan') }}
+            </a>
         </h2>
     </x-slot>
 
@@ -52,11 +54,11 @@
                                     <a href="{{ route('kendaraan.edit', $kendaraan) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
 
                                     {{-- Tombol Hapus (dalam form) --}}
-                                    <form action="{{ route('kendaraan.destroy', $kendaraan) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                    <!-- <form action="{{ route('kendaraan.destroy', $kendaraan) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900 ml-4">Hapus</button>
-                                    </form>
+                                    </form> -->
                                 </td>
                             </tr>
                             @empty
