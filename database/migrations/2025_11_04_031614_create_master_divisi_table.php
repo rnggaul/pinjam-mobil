@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('divisis', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('master_divisi', function (Blueprint $table) {
+            $table->integer('id_divisi', true);
+            $table->string('nama_divisi', 35)->nullable();
         });
     }
 
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('divisis');
+        Schema::dropIfExists('master_divisi');
     }
 };

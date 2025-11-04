@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('master_kendaraan', function (Blueprint $table) {
-            $table->id('mobil_id');
-            $table->string('nama_mobil');
-            $table->string('nopol')->unique();
-            $table->enum('jenis_mobil', ['Sedan', 'LCGC', 'SUV', 'MPV',]);
+            $table->integer('mobil_id', true);
+            $table->string('nama_kendaraan', 30);
+            $table->string('nopol', 11);
+            $table->enum('jenis_mobil', ['Sedan', 'LCGC', 'SUV', 'MPV']);
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kendaraans');
+        Schema::dropIfExists('master_kendaraan');
     }
 };
