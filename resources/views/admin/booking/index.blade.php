@@ -54,7 +54,7 @@
                                         <form action="{{ route('admin.booking.updateStatus', $booking) }}" method="POST" onsubmit="return confirm('Anda yakin ingin MENYETUJUI booking ini?');">
                                             @csrf
                                             <input type="hidden" name="status" value="approved">
-                                            <button typed="submit" class="inline-flex items-center px-3 py-1 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500">
+                                            <button type="submit" class="inline-flex items-center px-3 py-1 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500">
                                                 Approve
                                             </button>
                                         </form>
@@ -80,7 +80,9 @@
                             </tbody>
                         </table>
                     </div>
-
+                    <div class="mt-6">
+                        {{ $pendingBookings->links() }}
+                    </div>
                 </div>
             </div>
         </div>
