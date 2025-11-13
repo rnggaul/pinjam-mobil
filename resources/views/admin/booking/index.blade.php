@@ -31,7 +31,9 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Peminjam</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Departemen</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kendaraan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nomor Polisi</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Aksi</th>
                                 </tr>
@@ -43,7 +45,13 @@
                                         {{ $booking->user->name ?? 'User Dihapus' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        {{ $booking->user?->divisi?->nama_divisi ?? 'N/A' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         {{ $booking->kendaraan->nama_kendaraan ?? 'Kendaraan Dihapus' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        {{ $booking->kendaraan->nopol ?? 'Kendaraan Dihapus' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         {{ $booking->tanggal_mulai->format('d M Y') }} - {{ $booking->tanggal_selesai->format('d M Y') }}

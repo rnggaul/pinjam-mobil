@@ -49,4 +49,9 @@ class User extends Authenticatable
         return $this->hasMany(Booking::class);
     }
 
+    public function divisi()
+    {
+        return $this->belongsTo(Divisi::class, 'id_divisi', 'id_divisi');
+    }
+
 }

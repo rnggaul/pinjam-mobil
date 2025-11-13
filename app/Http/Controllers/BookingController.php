@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
-    //
-    public $timestamps = false;
+    // HAPUS 'public $timestamps = false;' DARI SINI
+    // Pindahkan ke app/Models/Booking.php
 
     public function index(Request $request)
     {
@@ -25,26 +25,19 @@ class BookingController extends Controller
             $reqMulai = Carbon::parse($tanggal_mulai_input)->startOfDay();
             $reqSelesai = Carbon::parse($tanggal_selesai_input)->endOfDay();
 
-            // 1. Ambil ID mobil yang BENTROK (menggunakan model 'Booking')
             $conflictingCarIds = Booking::where(function ($query) use ($reqMulai, $reqSelesai) {
-                // Logika Overlap (Bentrok):
-                // (Mulai_A < Selesai_B) AND (Selesai_A > Mulai_B)
                 $query->where('tanggal_mulai', '<=', $reqSelesai)
                     ->where('tanggal_selesai', '>=', $reqMulai);
             })
-                // Hanya cek booking yang masih aktif
+                // PERBAIKAN: Gunakan status huruf kecil yang konsisten
                 ->whereIn('status', ['approved', 'pending'])
                 ->pluck('mobil_id')
                 ->unique();
 
-
-            // 2. Ambil semua kendaraan KECUALI yang ID-nya bentrok
-            //    (Diperbarui: menggunakan 'mobil_id' sebagai primary key)
             $kendaraansTersedia = Kendaraan::whereNotIn('mobil_id', $conflictingCarIds)
                 ->get();
         }
 
-        // 3. Kirim data ke view
         return view('dashboard', [
             'kendaraans' => $kendaraansTersedia
         ]);
@@ -52,48 +45,46 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
-        // 1. Validasi data yang dikirim dari form
+        // 1. Validasi (dibuat lebih spesifik)
         $request->validate([
             'mobil_id' => 'required|exists:master_kendaraan,mobil_id',
-            'tanggal_mulai' => 'required|date',
-            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
-        ],[
-            'tanggal_selesai.after_or_equal' => 'Tanggal selesai harus sama dengan atau setelah tanggal mulai.'
+            'tanggal_mulai' => 'required|date_format:Y-m-d|after_or_equal:today|before_or_equal:+1 week',
+            'tanggal_selesai' => 'required|date_format:Y-m-d|after_or_equal:tanggal_mulai',
+        ], [
+            // Pesan error kustom
+            'tanggal_selesai.after_or_equal' => 'Tanggal Selesai harus sama atau setelah Tanggal Mulai.',
+            'tanggal_mulai.before_or_equal' => 'Tanggal Selesai harus sama atau setelah Tanggal Mulai.'
         ]);
 
-        // 2. Ambil ID user yang sedang login
+        // 2. Ambil ID user
         $userId = Auth::id();
 
-        // 3. Simpan data booking baru
+        // 3. Simpan data (PERBAIKAN DI SINI)
         Booking::create([
             'mobil_id' => $request->mobil_id,
             'user_id' => $userId,
             'km_awal' => null,
             'km_akhir' => null,
-            'tanggal_mulai' => $request->tanggal_mulai,
-            'tanggal_selesai' => $request->tanggal_selesai,
-            'status' => 'pending', // Status default saat pertama kali memesan
+            
+            'tanggal_mulai' => Carbon::parse($request->tanggal_mulai)->startOfDay(),
+            'tanggal_selesai' => Carbon::parse($request->tanggal_selesai)->endOfDay(),
+            
+            'status' => 'pending', 
         ]);
 
-        // 4. Redirect ke halaman 'history' (atau 'dashboard') dengan pesan sukses
-        // (Pastikan Anda punya route 'history.index' nantinya)
-        return redirect()->route('dashboard')->with('success', 'Kendaraan berhasil dipesan! Tunggu persetujuan Admin.');
+        // 4. Redirect (Arahkan ke 'history' agar user bisa lihat statusnya)
+        return redirect()->route('history')->with('success', 'Kendaraan berhasil dipesan! Tunggu persetujuan Admin.');
     }
 
     public function history(Request $request)
     {
-        // 1. Ambil semua input filter dari URL.
-        // request()->query() mengambil semua parameter GET (misal: ?nopol=B123)
+        // Kode 'history' Anda sudah benar (asumsi 'nopol' sudah benar)
         $filters = $request->query();
 
-        // 2. Mulai bangun kueri, jangan langsung ->get()
         $query = Booking::where('user_id', Auth::id())
-                            ->where('status', '!=', 'pending')
-                            ->with(['user', 'kendaraan'])
-                            ->latest('tanggal_mulai');
+            ->with(['kendaraan']) // 'kendaraan' BUKAN 'user', 'kendaraan'
+            ->latest('tanggal_mulai');
 
-        // 3. Terapkan filter HANYA JIKA user mengisinya
-        
         // Filter Tanggal
         if ($request->filled('tanggal_mulai') && $request->filled('tanggal_selesai')) {
             $reqMulai = Carbon::parse($request->tanggal_mulai)->startOfDay();
@@ -101,27 +92,25 @@ class BookingController extends Controller
             $query->whereBetween('tanggal_mulai', [$reqMulai, $reqSelesai]);
         }
 
-        // Filter Kendaraan (berdasarkan NAMA)
+        // Filter Kendaraan
         if ($request->filled('nama_kendaraan')) {
-            // whereHas = Filter di tabel relasi (tabel kendaraan)
             $query->whereHas('kendaraan', function ($q) use ($request) {
                 $q->where('nama_kendaraan', 'like', '%' . $request->nama_kendaraan . '%');
             });
         }
 
-        // Filter Nopol
-        if ($request->filled('nopol')) {
-            // Ganti 'nopol' dengan 'nomor_polisi' jika itu nama kolom Anda
+        // Filter Nopol (Pastikan 'nopol' adalah nama kolom di DB)
+        // Filter Nopol (KODE BARU YANG BENAR)
+        // Pastikan ini 'nomor_polisi' agar cocok dengan name di form
+        if ($request->filled('nomor_polisi')) {
             $query->whereHas('kendaraan', function ($q) use ($request) {
-                $q->where('nopol', 'like', '%' . $request->nopol . '%'); 
+                // Pastikan 'nopol' ini adalah nama kolom di database Anda
+                $q->where('nopol', 'like', '%' . $request->nomor_polisi . '%');
             });
         }
 
-        // 4. Eksekusi kueri dengan paginate(10)
-        // appends($filters) SANGAT PENTING agar filter tetap aktif saat pindah halaman
         $bookings = $query->paginate(10)->appends($filters);
 
-        // 5. Kirim data ke view
         return view('history', [
             'bookings' => $bookings
         ]);
@@ -129,18 +118,17 @@ class BookingController extends Controller
 
     public function startBooking(Request $request, Booking $booking)
     {
-        // 1 pastikan booking milik user yang sedang login
         if ($booking->user_id !== Auth::id()) {
             return redirect()->route('history')->with('error', 'Silahkan Login untuk memulai Booking');
         }
 
-        // 2 hanya boleh status approved
+        // PERBAIKAN: Gunakan status huruf kecil
         if ($booking->status !== 'approved') {
             return redirect()->route('history')->with('error', 'Booking belum disetujui');
         }
 
-        // 3 validasi input km_awal
-        $last_km =  Booking::where('mobil_id', $booking->mobil_id)
+        // PERBAIKAN: Gunakan status huruf kecil
+        $last_km = Booking::where('mobil_id', $booking->mobil_id)
             ->where('status', 'finish')
             ->orderby('km_akhir', 'desc')
             ->first();
@@ -151,7 +139,6 @@ class BookingController extends Controller
             'km_awal' => 'required|numeric|min:' . $minKm,
         ]);
 
-        // 4 update booking
         $booking->update([
             'km_awal' => $request->km_awal
         ]);
@@ -161,27 +148,23 @@ class BookingController extends Controller
 
     public function finishBooking(Request $request, Booking $booking)
     {
-        // 1 pastikan booking milik user yang sedang login
         if ($booking->user_id !== Auth::id()) {
             return redirect()->route('history')->with('error', 'Silahkan Login untuk memulai Booking');
         }
-
-        // 2 memastikan km awal sudah diisi
         if (is_null($booking->km_awal)) {
             return redirect()->route('history')->with('error', 'Anda harus memasukan KM Awal terlebih dahulu!');
         }
 
-        // 3 validasi input km_akhir
         $request->validate([
             'km_akhir' => 'required|numeric|min:' . $booking->km_awal,
         ]);
 
-        // 4 update booking
         try {
+            // PERBAIKAN: Hapus 'tanggal_selesai' => now()
             $booking->update([
-                'status' => 'finish',
+                'status' => 'finish', // PERBAIKAN: Gunakan status huruf kecil
                 'km_akhir' => $request->km_akhir,
-                'tanggal_selesai' => now()
+                // 'tanggal_kembali' => now() // (Gunakan ini jika Anda punya kolom 'tanggal_kembali')
             ]);
 
             return redirect()->route('history')->with('success', 'Booking selesai. Terima kasih');

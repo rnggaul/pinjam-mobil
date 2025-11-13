@@ -11,7 +11,7 @@ class Kendaraan extends Model
 
     // 1 menentukan nama tabel
     protected $table = 'master_kendaraan';
-
+    
     // 2 menentukan primary key
     protected $primaryKey = 'mobil_id';
 

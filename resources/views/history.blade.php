@@ -110,6 +110,9 @@
                                         
                                         {{-- LOGIKA KONDISIONAL UNTUK AKSI --}}
                                         @if ($booking->status == 'approved')
+                                        <p class="text-sm">
+                                                <strong>Nomor Polisi:</strong> {{ $booking->kendaraan->nopol}}
+                                            </p>
                                             @if (is_null($booking->km_awal))
                                                 {{-- Form KM Awal --}}
                                                 <form action="{{ route('booking.start', $booking) }}" method="POST" class="mt-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
@@ -124,7 +127,7 @@
                                                 </form>
                                             @else
                                                 {{-- Form KM Akhir --}}
-                                                <p class="text-sm mt-2">
+                                                <p class="text-sm">
                                                     <strong>KM Awal:</strong> {{ number_format($booking->km_awal, 1, '.', '') }} KM
                                                 </p>
                                                 <form action="{{ route('booking.finish', $booking) }}" method="POST" class="mt-4 bg-green-50 p-4 rounded-lg border border-green-200">
@@ -140,7 +143,10 @@
                                             @endif
                                         @elseif ($booking->status == 'finish')
                                             {{-- Info KM Selesai --}}
-                                            <p class="text-sm mt-2">
+                                            <p class="text-sm">
+                                                <strong>Nomor Polisi:</strong> {{ $booking->kendaraan->nopol}}
+                                            </p>
+                                            <p class="text-sm">
                                                 <strong>KM Awal:</strong> {{ number_format($booking->km_awal, 1, '.', '') }} KM
                                             </p>
                                             <p class="text-sm">
@@ -150,6 +156,9 @@
                                                 Total Pemakaian: {{ number_format($booking->km_akhir - $booking->km_awal, 1, '.', '') }} KM
                                             </p>
                                         @elseif ($booking->status == 'pending')
+                                        <p class="text-sm">
+                                                <strong>Nomor Polisi:</strong> {{ $booking->kendaraan->nopol}}
+                                            </p>
                                             <p class="text-sm text-yellow-700 mt-4">Menunggu persetujuan dari Admin.</p>
                                         @else
                                             <p class="text-sm text-red-700 mt-4">Booking ini ditolak atau dibatalkan.</p>

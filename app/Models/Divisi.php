@@ -22,4 +22,9 @@ class Divisi extends Model
     protected $primaryKey = 'id_divisi';
 
     public $timestamps = false;
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'id_divisi', 'id_divisi');
+    }
 }
