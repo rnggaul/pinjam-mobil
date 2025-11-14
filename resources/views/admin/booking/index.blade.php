@@ -56,9 +56,10 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         {{ $booking->tanggal_mulai->format('d M Y') }} - {{ $booking->tanggal_selesai->format('d M Y') }}
                                     </td>
+                                    
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
 
-                                        {{-- FORM UNTUK "APPROVE" --}}
+                                        {{-- 1. FORM UNTUK "APPROVE" (Tetap sama, inline) --}}
                                         <form action="{{ route('admin.booking.updateStatus', $booking) }}" method="POST" onsubmit="return confirm('Anda yakin ingin MENYETUJUI booking ini?');">
                                             @csrf
                                             <input type="hidden" name="status" value="approved">
@@ -67,15 +68,70 @@
                                             </button>
                                         </form>
 
-                                        {{-- FORM UNTUK "REJECT" --}}
-                                        <form action="{{ route('admin.booking.updateStatus', $booking) }}" method="POST" onsubmit="return confirm('Anda yakin ingin MENOLAK booking ini?');">
-                                            @csrf
-                                            <input type="hidden" name="status" value="rejected">
-                                            <button type="submit" class="inline-flex items-center px-3 py-1 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500">
+                                        {{-- 2. LOGIKA MODAL UNTUK "REJECT" (Menggunakan Alpine.js) --}}
+                                        <div x-data="{ open: false }">
+
+                                            {{-- Tombol Pemicu (Trigger) --}}
+                                            <button @click="open = true" type="button" class="inline-flex items-center px-3 py-1 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500">
                                                 Reject
                                             </button>
-                                        </form>
 
+                                            {{-- Modal/Popup --}}
+                                            <div x-show="open"
+                                                x-transition:enter="ease-out duration-300"
+                                                x-transition:enter-start="opacity-0"
+                                                x-transition:enter-end="opacity-100"
+                                                x-transition:leave="ease-in duration-200"
+                                                x-transition:leave-start="opacity-100"
+                                                x-transition:leave-end="opacity-0"
+                                                class="fixed inset-0 z-50 flex items-center justify-center"
+                                                style="display: none;"> {{-- 'display: none' untuk mencegah FOUC (kedipan) saat halaman dimuat --}}
+
+                                                {{-- Latar Belakang Overlay --}}
+                                                <div @click="open = false" class="fixed inset-0 bg-gray-500 bg-opacity-75" aria-hidden="true"></div>
+
+                                                {{-- Konten Modal --}}
+                                                <div @click.away="open = false"
+                                                    @keydown.escape.window="open = false"
+                                                    class="relative z-10 w-full max-w-lg p-6 bg-white rounded-lg shadow-xl">
+
+                                                    {{-- Form Reject sekarang ada di dalam modal --}}
+                                                    <form action="{{ route('admin.booking.updateStatus', $booking) }}" method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="status" value="rejected">
+
+                                                        <h3 class="text-lg font-medium text-gray-900 text-left">
+                                                            Tolak Booking #{{ $booking->booking_id }}
+                                                        </h3>
+
+                                                        <div class="mt-4 text-left">
+                                                            <label for="rejection_note_{{ $booking->booking_id }}" class="block text-sm font-medium text-gray-700">
+                                                                Alasan Penolakan (Wajib)
+                                                            </label>
+                                                            <textarea
+                                                                id="rejection_note_{{ $booking->booking_id }}"
+                                                                name="rejection_note"
+                                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
+                                                                placeholder="Contoh: Kendaraan sedang dalam perbaikan."
+                                                                rows="3"
+                                                                required>{{ old('rejection_note') }}</textarea>
+
+                                                            {{-- Tampilkan error validasi jika 'rejection_note' tidak diisi --}}
+                                                            <x-input-error :messages="$errors->get('rejection_note')" class="mt-2" />
+                                                        </div>
+
+                                                        <div class="mt-6 flex justify-end space-x-3">
+                                                            <button @click="open = false" type="button" class_gray-300" ring-gray-300" focus:ring-offset-2">
+                                                                Batal
+                                                            </button>
+                                                            <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500">
+                                                                Konfirmasi Penolakan
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 @empty

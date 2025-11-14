@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/bookings', [AdminBookingController::class, 'index'])->name('admin.booking.index');
         Route::post('/admin/bookings/update/{booking}', [AdminBookingController::class, 'updateStatus'])->name('admin.booking.updateStatus');
         Route::get('/admin/bookings/history', [AdminBookingController::class, 'history'])->name('admin.booking.history');
+        Route::get('/admin/bookings/export', [AdminBookingController::class, 'exportHistory'])->name('admin.booking.export');
     });
 });
 

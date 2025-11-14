@@ -50,6 +50,13 @@
                             <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
                                 Filter
                             </button>
+                            {{-- 
+                              Tombol ini adalah link ke rute 'export'.
+                              'request()->query()' SANGAT PENTING untuk mengirim filter Anda.
+                            --}}
+                            <a href="{{ route('admin.booking.export', request()->query()) }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500">
+                                Export ke Excel
+                            </a>
                         </div>
                     </form>
                 </div>
@@ -68,9 +75,11 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Peminjam</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Departemen</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kendaraan</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nomor Polisi</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">KM</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                                 </tr>
                             </thead>
@@ -81,6 +90,9 @@
                                             {{ $booking->user->name ?? 'User Dihapus' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        {{ $booking->user?->divisi?->nama_divisi ?? 'N/A' }}
+                                    </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             {{ $booking->kendaraan->nama_kendaraan ?? 'Kendaraan Dihapus' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
@@ -89,6 +101,9 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             {{ $booking->tanggal_mulai->format('d M Y') }} - {{ $booking->tanggal_selesai->format('d M Y') }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            {{ $booking->km_awal }} KM - {{ $booking->km_akhir }} KM
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             {{-- Status Badge --}}

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->decimal('km_akhir', 10, 0)->nullable();
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
+            $table->text('note')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected', 'finish']);
 
             $table->index(['user_id'], 'user_id_2');

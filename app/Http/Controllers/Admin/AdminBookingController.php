@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Booking;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\BookingsHistoryExport;
 
 class AdminBookingController extends Controller
 {
@@ -25,6 +27,10 @@ class AdminBookingController extends Controller
         // 1 validasi input dari form
         $request->validate([
             'status' => 'required|in:approved,rejected',
+
+            'note' => 'required_if:status,rejected|string|nullable|max:1000',
+        ],[
+            'note.required_if' => 'Alasan penolakan wajib diisi jika me-reject booking.'
         ]);
 
         // 2 update status booking
@@ -78,5 +84,17 @@ class AdminBookingController extends Controller
 
         // 5. Kirim data ke view
         return view('admin.booking.history', compact('historyBookings'));
+    }
+
+    public function exportHistory(Request $request)
+    {
+        // 1. Ambil semua filter dari URL
+        $filters = $request->query();
+
+        // 2. Tentukan nama file
+        $fileName = 'riwayat_booking_' . Carbon::now()->format('d-m-Y') . '.xlsx';
+
+        // 3. Panggil Export Class dan kirimkan filter, lalu download
+        return Excel::download(new BookingsHistoryExport($filters), $fileName);
     }
 }
