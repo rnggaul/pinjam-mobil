@@ -105,19 +105,19 @@
                                                         </h3>
 
                                                         <div class="mt-4 text-left">
-                                                            <label for="rejection_note_{{ $booking->booking_id }}" class="block text-sm font-medium text-gray-700">
+                                                            <label for="note_{{ $booking->booking_id }}" class="block text-sm font-medium text-gray-700">
                                                                 Alasan Penolakan (Wajib)
                                                             </label>
                                                             <textarea
-                                                                id="rejection_note_{{ $booking->booking_id }}"
-                                                                name="rejection_note"
+                                                                id="note_{{ $booking->booking_id }}"
+                                                                name="note"
                                                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
                                                                 placeholder="Contoh: Kendaraan sedang dalam perbaikan."
                                                                 rows="3"
-                                                                required>{{ old('rejection_note') }}</textarea>
+                                                                required>{{ old('note') }}</textarea>
 
-                                                            {{-- Tampilkan error validasi jika 'rejection_note' tidak diisi --}}
-                                                            <x-input-error :messages="$errors->get('rejection_note')" class="mt-2" />
+                                                            {{-- Tampilkan error validasi jika 'note' tidak diisi --}}
+                                                            <x-input-error :messages="$errors->get('note')" class="mt-2" />
                                                         </div>
 
                                                         <div class="mt-6 flex justify-end space-x-3">

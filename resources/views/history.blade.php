@@ -162,14 +162,7 @@
                                     <p class="text-sm text-yellow-700 mt-4">Menunggu persetujuan dari Admin.</p>
                                     @else
                                     <p class="text-sm text-red-700 mt-4">
-                                        <strong>Booking ini ditolak atau dibatalkan.</strong>
-
-                                        {{-- 👇 TAMPILKAN ALASAN PENOLAKAN JIKA ADA 👇 --}}
-                                        @if($booking->note)
-                                        <span class="block mt-1 text-xs text-gray-700 bg-gray-100 p-2 rounded">
-                                            <strong>Alasan dari Admin:</strong> {{ $booking->note }}
-                                        </span>
-                                        @endif
+                                        <strong>Alasan dari Admin:</strong> {{ $booking->note }}
                                     </p>
                                     @endif
                                 </div>

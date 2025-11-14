@@ -24,21 +24,29 @@ class AdminBookingController extends Controller
 
     public function updateStatus(Request $request, Booking $booking)
     {
-        // 1 validasi input dari form
+        // 1. Validasi (Kode Anda sudah benar)
         $request->validate([
             'status' => 'required|in:approved,rejected',
-
             'note' => 'required_if:status,rejected|string|nullable|max:1000',
-        ],[
+        ], [
             'note.required_if' => 'Alasan penolakan wajib diisi jika me-reject booking.'
         ]);
 
-        // 2 update status booking
-        $booking->update([
+        // 2. Siapkan data untuk di-update
+        $dataToUpdate = [
             'status' => $request->status
-        ]);
+        ];
 
-        // 3 redirect kembali dengan pesan sukses
+        // 3. (INI BAGIAN YANG HILANG)
+        //    Jika statusnya 'rejected', tambahkan 'note' ke data
+        if ($request->status == 'rejected') {
+            $dataToUpdate['note'] = $request->note;
+        }
+
+        // 4. Update booking dengan SEMUA data (status + note)
+        $booking->update($dataToUpdate);
+
+        // 5. Redirect
         return redirect()->route('admin.booking.index')->with('success', 'Status booking berhasil diperbarui.');
     }
 
