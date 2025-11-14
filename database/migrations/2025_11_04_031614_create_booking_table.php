@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
             $table->text('note')->nullable();
+            $table->text('driver')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected', 'finish']);
 
             $table->index(['user_id'], 'user_id_2');

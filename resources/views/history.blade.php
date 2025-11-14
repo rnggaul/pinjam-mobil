@@ -113,7 +113,10 @@
                                     <p class="text-sm">
                                         <strong>Nomor Polisi:</strong> {{ $booking->kendaraan->nopol}}
                                     </p>
-                                    @if (is_null($booking->km_awal))
+                                    <p class="text-sm">
+                                        <strong>Nama Driver:</strong> {{ $booking->driver ?? 'Tidak ada driver'}}
+                                    </p>
+                                    <!-- @if (is_null($booking->km_awal))
                                     {{-- Form KM Awal --}}
                                     <form action="{{ route('booking.start', $booking) }}" method="POST" class="mt-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
                                         @csrf
@@ -140,7 +143,7 @@
                                             Selesaikan Peminjaman
                                         </button>
                                     </form>
-                                    @endif
+                                    @endif -->
                                     @elseif ($booking->status == 'finish')
                                     {{-- Info KM Selesai --}}
                                     <p class="text-sm">

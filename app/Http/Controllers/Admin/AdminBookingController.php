@@ -28,6 +28,7 @@ class AdminBookingController extends Controller
         $request->validate([
             'status' => 'required|in:approved,rejected',
             'note' => 'required_if:status,rejected|string|nullable|max:1000',
+            'driver' => 'nullable|string|max:50',
         ], [
             'note.required_if' => 'Alasan penolakan wajib diisi jika me-reject booking.'
         ]);
@@ -37,16 +38,20 @@ class AdminBookingController extends Controller
             'status' => $request->status
         ];
 
-        // 3. (INI BAGIAN YANG HILANG)
-        //    Jika statusnya 'rejected', tambahkan 'note' ke data
+        // 3. Jika statusnya 'rejected', tambahkan 'note' ke data
         if ($request->status == 'rejected') {
             $dataToUpdate['note'] = $request->note;
         }
 
-        // 4. Update booking dengan SEMUA data (status + note)
+        // 4. Jika statusnya 'approved' dan ada input 'driver', tambahkan 'driver' ke data
+        if ($request->status == 'approved' && $request->filled('driver')) {
+            $dataToUpdate['driver'] = $request->driver;
+        }
+
+        // 5. Update booking dengan SEMUA data (status + note)
         $booking->update($dataToUpdate);
 
-        // 5. Redirect
+        // 6. Redirect
         return redirect()->route('admin.booking.index')->with('success', 'Status booking berhasil diperbarui.');
     }
 
