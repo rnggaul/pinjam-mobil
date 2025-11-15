@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->integer('id_divisi')->index('id_divisi');
             $table->string('password');
-            $table->enum('role', ['user', 'admin'])->default('user');
+            $table->enum('role', ['user', 'admin', 'security', 'superAdmin'])->default('user');
             $table->rememberToken();
             $table->timestamps();
         });

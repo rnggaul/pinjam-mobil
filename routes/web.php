@@ -7,6 +7,7 @@ use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminBookingController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\SecurityController;
 
 
 /*
@@ -40,7 +41,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('mobil', MobilController::class);
     Route::get('/history', [BookingController::class, 'history'])->name('history');
     Route::post('/booking/start/{booking}', [BookingController::class, 'startBooking'])->name('booking.start');
     Route::post('/booking/finish/{booking}', [BookingController::class, 'finishBooking'])->name('booking.finish');
@@ -56,6 +56,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/bookings/update/{booking}', [AdminBookingController::class, 'updateStatus'])->name('admin.booking.updateStatus');
         Route::get('/admin/bookings/history', [AdminBookingController::class, 'history'])->name('admin.booking.history');
         Route::get('/admin/bookings/export', [AdminBookingController::class, 'exportHistory'])->name('admin.booking.export');
+    });
+    Route::middleware('security')->group(function () {
+        // Halaman utama security (menampilkan daftar + filter)
+        Route::get('/security/dashboard', [SecurityController::class, 'index'])->name('security.dashboard');
+
+        // Rute untuk memproses form KM Awal
+        Route::post('/security/start/{booking}', [SecurityController::class, 'startBooking'])->name('security.start');
+
+        // Rute untuk memproses form KM Akhir
+        Route::post('/security/finish/{booking}', [SecurityController::class, 'finishBooking'])->name('security.finish');
     });
 });
 

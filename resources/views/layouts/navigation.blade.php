@@ -11,7 +11,7 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <!-- <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
@@ -19,7 +19,49 @@
                     <x-nav-link :href="route('history')" :active="request()->routeIs('history')">
                         {{ __('history') }}
                     </x-nav-link>
+                </div> -->
+
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+
+                    @if(Auth::user()->role == 'user')
+                    {{-- === Tampilan User === --}}
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        {{ __('Cari Kendaraan') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('history')" :active="request()->routeIs('history')">
+                        {{ __('Riwayat Saya') }}
+                    </x-nav-link>
+
+                    @elseif(Auth::user()->role == 'admin')
+                    {{-- === Tampilan Admin === --}}
+                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                        {{ __('Admin Dashboard') }}
+                    </x-nav-link>
+
+                    @elseif(Auth::user()->role == 'security')
+                    {{-- === Tampilan Security === --}}
+                    <x-nav-link :href="route('security.dashboard')" :active="request()->routeIs('security.dashboard')">
+                        {{ __('Security Dashboard') }}
+                    </x-nav-link>
+
+                    @elseif(Auth::user()->role == 'superAdmin')
+                    {{-- === Tampilan SuperAdmin (SEMUA LINK) === --}}
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('history')" :active="request()->routeIs('history')">
+                        {{ __('History') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.dashboard') | request()->routeIs('admin.booking.*')">
+                        {{ __('Admin Dashboard') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('security.dashboard')" :active="request()->routeIs('security.dashboard')">
+                        {{ __('Security Dashboard') }}
+                    </x-nav-link>
+                    @endif
+
                 </div>
+
             </div>
 
             <!-- Settings Dropdown -->
