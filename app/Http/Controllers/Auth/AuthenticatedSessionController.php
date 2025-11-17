@@ -30,7 +30,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         if (Auth::user()->role === 'admin' || Auth::user()->role === 'superAdmin') {
-            return redirect()->route('admin.index');
+            return redirect()->route('admin.booking.index');
         } else if (Auth::user()->role === 'security') {
             return redirect()->route('security.dashboard');
         }else {

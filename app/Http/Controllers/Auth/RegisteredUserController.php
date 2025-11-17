@@ -43,7 +43,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'id_divisi' => ['required', 'exists:master_divisi,id_divisi'],
             'g-recaptcha-response' => ['required', 'recaptcha'],
-        ],[
+        ], [
             'g-recaptcha-response.required' => 'Anda harus mencentang kotak "I\'m not a robot".',
             'g-recaptcha-response.recaptcha' => 'Verifikasi CAPTCHA gagal. Silakan coba lagi.',
             'id_divisi.required' => 'Anda harus memilih divisi.',
@@ -62,6 +62,5 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);
-
     }
 }

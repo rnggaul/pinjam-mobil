@@ -1,11 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            <a href="{{ route('admin.index') }}" class="hover:underline">
-                {{ __('Manajemen Request Booking') }}
-            </a>
-        </h2>
-    </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -35,6 +28,8 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kendaraan</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nomor Polisi</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tujuan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Keperluan</th>
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Aksi</th>
                                 </tr>
                             </thead>
@@ -56,11 +51,14 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         {{ $booking->tanggal_mulai->format('d M Y') }} - {{ $booking->tanggal_selesai->format('d M Y') }}
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        {{ $booking->tujuan }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        {{ $booking->keperluan }}
+                                    </td>
 
-                                    {{--
-  GANTI SELURUH ISI 'td' LAMA ANDA DENGAN BLOK KODE BARU INI.
-  'td' ini sekarang berisi 2 modal: 'Approve' dan 'Reject'.
---}}
+                                    {{--GANTI SELURUH ISI 'td' LAMA ANDA DENGAN BLOK KODE BARU INI. 'td' ini sekarang berisi 2 modal: 'Approve' dan 'Reject'. --}}
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
 
                                         {{-- ================================================= --}}
@@ -164,7 +162,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                    <td colspan="8" class="px-6 py-5 whitespace-nowrap text-sm text-gray-500 text-center">
                                         Tidak ada request booking yang pending.
                                     </td>
                                 </tr>

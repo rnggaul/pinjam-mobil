@@ -12,15 +12,15 @@ class SecurityController extends Controller
 {
     /**
      * Menampilkan dashboard security dengan filter.
-     * Hanya menampilkan booking yang 'approved' atau 'berjalan'.
+     * Hanya menampilkan booking yang 'approved' atau 'running'.
      */
     public function index(Request $request)
     {
         $filters = $request->query();
 
         // 1. Mulai kueri HANYA untuk status 'approved' (menunggu KM awal)
-        //    atau 'berjalan' (menunggu KM akhir)
-        $query = Booking::whereIn('status', ['approved'])
+        //    atau 'running' (menunggu KM akhir)
+        $query = Booking::whereIn('status', ['approved','running'])
                             ->with(['user', 'kendaraan'])
                             ->latest('tanggal_mulai');
 
@@ -58,7 +58,7 @@ class SecurityController extends Controller
 
     /**
      * Menyimpan KM Awal (dipindahkan dari BookingController)
-     * Kita juga tambahkan status baru 'berjalan'
+     * Kita juga tambahkan status baru 'running'
      */
     public function startBooking(Request $request, Booking $booking)
     {
@@ -77,14 +77,16 @@ class SecurityController extends Controller
 
         $request->validate([
             'km_awal' => 'required|numeric|min:' . $minKm,
+            'jam_keluar' => 'required|date_format:H:i',
         ], [
             'km_awal.min' => 'KM Awal tidak boleh lebih rendah dari KM terakhir (:min KM).'
         ]);
 
-        // 3. Update booking (Status berubah menjadi 'berjalan')
+        // 3. Update booking (Status berubah menjadi 'running')
         $booking->update([
             'km_awal' => $request->km_awal,
-            'status' => 'berjalan' // <-- STATUS BARU
+            'status' => 'running', // <-- STATUS BARU
+            'jam_keluar' => Carbon::parse($request->jam_keluar),
         ]);
         
         return redirect()->route('security.dashboard')->with('success', 'Perjalanan untuk Booking #'.$booking->booking_id.' dimulai.');
@@ -103,6 +105,7 @@ class SecurityController extends Controller
         // 2. Validasi input KM Akhir
         $request->validate([
             'km_akhir' => 'required|numeric|min:' . $booking->km_awal,
+            'jam_masuk' => 'required|date_format:H:i',
         ], [
             'km_akhir.min' => 'KM Akhir tidak boleh lebih rendah dari KM Awal ('.$booking->km_awal.' KM).'
         ]);
@@ -112,7 +115,7 @@ class SecurityController extends Controller
             $booking->update([
                 'status' => 'finish',
                 'km_akhir' => $request->km_akhir,
-                // 'tanggal_kembali' => now() // (Opsional jika Anda punya kolom ini)
+                'jam_masuk' => Carbon::parse($request->jam_masuk),
             ]);
 
             return redirect()->route('security.dashboard')->with('success', 'Booking #'.$booking->booking_id.' telah diselesaikan.');

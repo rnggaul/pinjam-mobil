@@ -34,9 +34,49 @@
 
                     @elseif(Auth::user()->role == 'admin')
                     {{-- === Tampilan Admin === --}}
-                    <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.dashboard')">
-                        {{ __('Admin Dashboard') }}
-                    </x-nav-link>
+                    <div class="hidden sm:flex sm:items-center sm:ms-6">
+                        <x-dropdown align="right" width="48">
+                            {{-- Ini adalah tombol pemicu (trigger) dropdown --}}
+                            <x-slot name="trigger">
+                                <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                    {{-- Tampilkan nama "Admin" atau "Menu Admin" --}}
+                                    <div>Menu Admin</div>
+
+                                    <div class="ms-1">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </x-slot>
+
+                            {{-- Ini adalah isi (content) dari dropdown --}}
+                            <x-slot name="content">
+                                <!-- <x-dropdown-link :href="route('admin.index')">
+                                    {{ __('Admin Dashboard') }}
+                                </x-dropdown-link> -->
+
+                                <x-dropdown-link :href="route('admin.booking.index')">
+                                    {{ __('Manajemen Booking') }}
+                                </x-dropdown-link>
+
+                                <x-dropdown-link :href="route('admin.booking.history')">
+                                    {{ __('Riwayat Booking') }}
+                                </x-dropdown-link>
+
+                                {{-- Pemisah --}}
+                                <div class="border-t border-gray-200"></div>
+
+                                <x-dropdown-link :href="route('kendaraan.index')">
+                                    {{ __('Master Kendaraan') }}
+                                </x-dropdown-link>
+
+                                <x-dropdown-link :href="route('divisi.index')">
+                                    {{ __('Master Divisi') }}
+                                </x-dropdown-link>
+                            </x-slot>
+                        </x-dropdown>
+                    </div>
 
                     @elseif(Auth::user()->role == 'security')
                     {{-- === Tampilan Security === --}}
@@ -52,9 +92,49 @@
                     <x-nav-link :href="route('history')" :active="request()->routeIs('history')">
                         {{ __('History') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.dashboard') | request()->routeIs('admin.booking.*')">
-                        {{ __('Admin Dashboard') }}
-                    </x-nav-link>
+                     <div class="hidden sm:flex sm:items-center sm:ms-6">
+                        <x-dropdown align="right" width="48">
+                            {{-- Ini adalah tombol pemicu (trigger) dropdown --}}
+                            <x-slot name="trigger">
+                                <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                    {{-- Tampilkan nama "Admin" atau "Menu Admin" --}}
+                                    <div>Menu Admin</div>
+
+                                    <div class="ms-1">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </x-slot>
+
+                            {{-- Ini adalah isi (content) dari dropdown --}}
+                            <x-slot name="content">
+                                <!-- <x-dropdown-link :href="route('admin.index')">
+                                    {{ __('Admin Dashboard') }}
+                                </x-dropdown-link> -->
+
+                                <x-dropdown-link :href="route('admin.booking.index')">
+                                    {{ __('Manajemen Booking') }}
+                                </x-dropdown-link>
+
+                                <x-dropdown-link :href="route('admin.booking.history')">
+                                    {{ __('Riwayat Booking') }}
+                                </x-dropdown-link>
+
+                                {{-- Pemisah --}}
+                                <div class="border-t border-gray-200"></div>
+
+                                <x-dropdown-link :href="route('kendaraan.index')">
+                                    {{ __('Master Kendaraan') }}
+                                </x-dropdown-link>
+
+                                <x-dropdown-link :href="route('divisi.index')">
+                                    {{ __('Master Divisi') }}
+                                </x-dropdown-link>
+                            </x-slot>
+                        </x-dropdown>
+                    </div>
                     <x-nav-link :href="route('security.dashboard')" :active="request()->routeIs('security.dashboard')">
                         {{ __('Security Dashboard') }}
                     </x-nav-link>

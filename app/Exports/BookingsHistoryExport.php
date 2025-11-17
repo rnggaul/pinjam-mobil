@@ -67,10 +67,15 @@ class BookingsHistoryExport implements FromQuery, WithHeadings, WithMapping
             'Nopol',
             'Tanggal Mulai',
             'Tanggal Selesai',
-            'Status',
             'KM Awal',
+            'Jam Keluar',
             'KM Akhir',
+            'Jam Masuk',
             'Total KM',
+            'Tujuan',
+            'Keperluan',
+            'Status',
+
         ];
     }
 
@@ -87,12 +92,16 @@ class BookingsHistoryExport implements FromQuery, WithHeadings, WithMapping
             $booking->user?->divisi?->nama_divisi ?? 'N/A', // Ambil nama divisi
             $booking->kendaraan->nama_kendaraan ?? 'N/A',
             $booking->kendaraan->nopol ?? 'N/A', // (sesuaikan nama kolom 'nopol')
-            $booking->tanggal_mulai->format('d-m-Y H:i'),
-            $booking->tanggal_selesai->format('d-m-Y H:i'),
-            ucfirst($booking->status),
+            $booking->tanggal_mulai->format('d-m-Y'),
+            $booking->tanggal_selesai->format('d-m-Y'),
             $booking->km_awal,
+            $booking->jam_keluar,
             $booking->km_akhir,
+            $booking->jam_masuk,
             $totalKm,
+            $booking->tujuan,
+            $booking->keperluan,
+            ucfirst($booking->status),
         ];
     }
 }

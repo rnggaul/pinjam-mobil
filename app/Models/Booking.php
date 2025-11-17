@@ -26,6 +26,8 @@ class Booking extends Model
     protected $casts = [
         'tanggal_mulai' => 'datetime',
         'tanggal_selesai' => 'datetime',
+        'jam_keluar' => 'datetime',
+        'jam_masuk' => 'datetime',
     ];
 
     public function user()

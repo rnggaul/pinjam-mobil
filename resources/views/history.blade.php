@@ -103,6 +103,7 @@
                                                 @if($booking->status == 'finish') bg-green-100 text-green-800
                                                 @elseif($booking->status == 'pending') bg-yellow-100 text-yellow-800
                                                 @elseif($booking->status == 'approved') bg-blue-100 text-blue-800
+                                                @elseif($booking->status == 'running') bg-green-100 text-green-800
                                                 @else bg-red-100 text-red-800 @endif">
                                             {{ ucfirst($booking->status) }}
                                         </span>
@@ -157,6 +158,14 @@
                                     </p>
                                     <p class="text-sm font-semibold text-green-700">
                                         Total Pemakaian: {{ number_format($booking->km_akhir - $booking->km_awal, 1, '.', '') }} KM
+                                    </p>
+                                    @elseif ($booking->status == 'running')
+                                    {{-- Info KM Selesai --}}
+                                    <p class="text-sm">
+                                        <strong>Nomor Polisi:</strong> {{ $booking->kendaraan->nopol}}
+                                    </p>
+                                    <p class="text-sm">
+                                        <strong>KM Awal:</strong> {{ number_format($booking->km_awal, 1, '.', '') }} KM
                                     </p>
                                     @elseif ($booking->status == 'pending')
                                     <p class="text-sm">

@@ -21,7 +21,11 @@ return new class extends Migration
             $table->date('tanggal_selesai');
             $table->text('note')->nullable();
             $table->text('driver')->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected', 'finish']);
+            $table->enum('status', ['pending', 'approved', 'rejected', 'finish','running']);
+            $table->datetime('jam_keluar')->nullable();
+            $table->datetime('jam_masuk')->nullable();
+            $table->text('tujuan')->nullable();
+            $table->text('keperluan')->nullable();
 
             $table->index(['user_id'], 'user_id_2');
         });

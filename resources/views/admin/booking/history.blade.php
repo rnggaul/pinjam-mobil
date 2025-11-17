@@ -80,6 +80,10 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nomor Polisi</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">KM</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jam Keluar</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jam Masuk</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tujuan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Keperluan</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                                 </tr>
                             </thead>
@@ -103,14 +107,27 @@
                                             {{ $booking->tanggal_mulai->format('d M Y') }} - {{ $booking->tanggal_selesai->format('d M Y') }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            {{ $booking->km_awal }} KM - {{ $booking->km_akhir }} KM
+                                            {{ $booking->km_awal ?? '0' }} KM - {{ $booking->km_akhir ?? '0' }} KM
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            {{ $booking->jam_keluar ?? '-'}} 
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            {{ $booking->jam_masuk ?? '-'}} 
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            {{ $booking->tujuan ?? '-'}} 
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            {{ $booking->keperluan ?? '-' }} 
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             {{-- Status Badge --}}
                                             <span class="px-3 py-1 text-xs font-semibold rounded-full
                                                 @if($booking->status == 'finish') bg-green-100 text-green-800
-                                                @elseif($booking->status == 'pending') bg-yellow-100 text-yellow-800
+                                                @elseif($booking->status == 'running') bg-green-100 text-green-800
                                                 @elseif($booking->status == 'approved') bg-blue-100 text-blue-800
+                                                @elseif($booking->status == 'rejected') bg-red-100 text-red-800
                                                 @else bg-red-100 text-red-800 @endif">
                                                 {{ ucfirst($booking->status) }}
                                             </span>

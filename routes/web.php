@@ -48,7 +48,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::middleware('admin')->group(function () {
-        Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.index');
+        //Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.index');
         Route::resource('divisi', DivisiController::class);
         Route::resource('kendaraan', KendaraanController::class);
 
