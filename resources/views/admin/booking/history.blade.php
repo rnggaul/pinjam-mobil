@@ -82,6 +82,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">KM</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jam Keluar</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jam Masuk</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Driver</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tujuan</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Keperluan</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
@@ -114,6 +115,9 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             {{ $booking->jam_masuk ?? '-'}} 
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            {{ $booking->driver ?? 'tidak ada driver'}} 
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             {{ $booking->tujuan ?? '-'}} 

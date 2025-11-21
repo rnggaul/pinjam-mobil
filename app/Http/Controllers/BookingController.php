@@ -17,12 +17,10 @@ class BookingController extends Controller
         if (Auth::user()->role == 'security') {
             return redirect()->route('security.dashboard')->with('error', 'Anda tidak bisa melakukan booking.');
         }
-        // if (Auth::user()->role == 'admin' || Auth::user()->role == 'superAdmin') {
-        //     // PERBAIKAN: Arahkan ke 'admin.index'
-        //     return redirect()->route('admin.index')->with('error', 'Silakan gunakan dashboard admin.');
-        // }
+        if (Auth::user()->role == 'admin' || Auth::user()->role == 'superAdmin') {
+            return redirect()->route('admin.booking.index')->with('error', 'Anda tidak bisa melakukan booking.');
+        }
 
-        // ... (Logika kueri 'index' Anda sudah benar) ...
         $tanggal_mulai_input = $request->input('tanggal_mulai');
         $tanggal_selesai_input = $request->input('tanggal_selesai');
         $kendaraansTersedia = collect();

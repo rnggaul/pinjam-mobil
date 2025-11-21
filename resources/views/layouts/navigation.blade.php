@@ -5,10 +5,26 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 " />
-                    </a>
-                </div>
+                @php
+                    // Tentukan rute "home" berdasarkan role user
+                    $homeRoute = '';
+                    if (Auth::user()->role == 'admin' || Auth::user()->role == 'superAdmin') {
+                        // Admin & SuperAdmin diarahkan ke halaman approval booking
+                        $homeRoute = route('admin.booking.index');
+                    } elseif (Auth::user()->role == 'security') {
+                        // Security diarahkan ke dashboard mereka
+                        $homeRoute = route('security.dashboard');
+                    } else {
+                        // User biasa diarahkan ke dashboard pencarian
+                        $homeRoute = route('dashboard');
+                    }
+                @endphp
+
+                {{-- Gunakan variabel $homeRoute di href --}}
+                <a href="{{ $homeRoute }}">
+                    <x-application-logo class="block h-9 w-auto fill-current text-gray-800 " />
+                </a>
+            </div>
 
                 <!-- Navigation Links -->
                 <!-- <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -52,9 +68,6 @@
 
                             {{-- Ini adalah isi (content) dari dropdown --}}
                             <x-slot name="content">
-                                <!-- <x-dropdown-link :href="route('admin.index')">
-                                    {{ __('Admin Dashboard') }}
-                                </x-dropdown-link> -->
 
                                 <x-dropdown-link :href="route('admin.booking.index')">
                                     {{ __('Manajemen Booking') }}
@@ -110,9 +123,6 @@
 
                             {{-- Ini adalah isi (content) dari dropdown --}}
                             <x-slot name="content">
-                                <!-- <x-dropdown-link :href="route('admin.index')">
-                                    {{ __('Admin Dashboard') }}
-                                </x-dropdown-link> -->
 
                                 <x-dropdown-link :href="route('admin.booking.index')">
                                     {{ __('Manajemen Booking') }}

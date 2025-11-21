@@ -24,7 +24,7 @@
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 ">
         <div>
             <a href="/">
-                <img src="images/logo-hokben.png" alt="Logo Perusahaan" class="w-48 h-auto mx-auto mb-6">
+                <img src="../images/logo-hokben.png" alt="Logo Perusahaan" class="w-48 h-auto mx-auto mb-6">
             </a>
         </div>
 

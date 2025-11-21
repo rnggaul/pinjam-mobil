@@ -14,21 +14,21 @@ class BookingsHistoryExport implements FromQuery, WithHeadings, WithMapping
     protected $filters;
 
     /**
-    * Kita gunakan __construct() untuk menerima filter dari controller
-    */
+     * Kita gunakan __construct() untuk menerima filter dari controller
+     */
     public function __construct(array $filters)
     {
         $this->filters = $filters;
     }
 
     /**
-    * Kueri ini MENG-COPY-PASTE logika filter dari AdminBookingController
-    */
+     * Kueri ini MENG-COPY-PASTE logika filter dari AdminBookingController
+     */
     public function query()
     {
         $query = Booking::where('status', '!=', 'pending')
-                            ->with(['user.divisi', 'kendaraan']) // Kita ambil relasi user, divisi, & kendaraan
-                            ->latest('tanggal_mulai');
+            ->with(['user.divisi', 'kendaraan']) // Kita ambil relasi user, divisi, & kendaraan
+            ->latest('tanggal_mulai');
 
         // Terapkan filter Tanggal
         if (!empty($this->filters['tanggal_mulai']) && !empty($this->filters['tanggal_selesai'])) {
@@ -50,13 +50,13 @@ class BookingsHistoryExport implements FromQuery, WithHeadings, WithMapping
                 $q->where('nopol', 'like', '%' . $this->filters['nopol'] . '%');
             });
         }
-        
+
         return $query;
     }
 
     /**
-    * Ini adalah judul kolom di file Excel Anda
-    */
+     * Ini adalah judul kolom di file Excel Anda
+     */
     public function headings(): array
     {
         return [
@@ -72,6 +72,7 @@ class BookingsHistoryExport implements FromQuery, WithHeadings, WithMapping
             'KM Akhir',
             'Jam Masuk',
             'Total KM',
+            'Driver',
             'Tujuan',
             'Keperluan',
             'Status',
@@ -80,25 +81,28 @@ class BookingsHistoryExport implements FromQuery, WithHeadings, WithMapping
     }
 
     /**
-    * Ini adalah data untuk setiap baris di Excel
-    */
+     * Ini adalah data untuk setiap baris di Excel
+     */
     public function map($booking): array
     {
-        $totalKm = ($booking->km_akhir && $booking->km_awal) ? $booking->km_akhir - $booking->km_awal : 0;
-        
+        $totalKm = (!is_null($booking->km_akhir) && !is_null($booking->km_awal))
+            ? $booking->km_akhir - $booking->km_awal
+            : 'belum ada KM';
+
         return [
             $booking->booking_id,
             $booking->user->name ?? 'N/A',
-            $booking->user?->divisi?->nama_divisi ?? 'N/A', // Ambil nama divisi
+            $booking->user?->divisi?->nama_divisi ?? 'N/A',
             $booking->kendaraan->nama_kendaraan ?? 'N/A',
-            $booking->kendaraan->nopol ?? 'N/A', // (sesuaikan nama kolom 'nopol')
+            $booking->kendaraan->nopol ?? 'N/A',
             $booking->tanggal_mulai->format('d-m-Y'),
             $booking->tanggal_selesai->format('d-m-Y'),
-            $booking->km_awal,
-            $booking->jam_keluar,
-            $booking->km_akhir,
-            $booking->jam_masuk,
+            $booking->km_awal ?? 'Belum ada KM',
+            $booking->jam_keluar ?? 'Belum ada jam',
+            $booking->km_akhir ?? 'Belum ada KM',
+            $booking->jam_masuk ?? 'Belum ada jam',
             $totalKm,
+            $booking->driver,
             $booking->tujuan,
             $booking->keperluan,
             ucfirst($booking->status),
