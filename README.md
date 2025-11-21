@@ -1,12 +1,8 @@
 # Hokben Vehicle Booking System
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-> [Tulis deskripsi singkat satu kalimat tentang apa yang dilakukan proyek ini. Contoh: "Aplikasi web untuk manajemen pemesanan kendaraan operasional perusahaan."]
+> [Aplikasi yang dibuat dalam rangka digitalisasi (Paperless), sebelumnya sudah ada sistem peminjaman yang masih menggunakan kertas tetapi langkah ini dinilai kurang efisien, dengan adanya gerakan Paperless diharapkan dapat menggantikan peranan kertas dan menambah nilai efisien serta efektifitas]
 
-Aplikasi [Nama Proyek] adalah sebuah sistem booking berbasis web yang dirancang untuk [jelaskan tujuan utama proyek, misal: "menyederhanakan proses pemesanan...", "mengelola ketersediaan...", "memudahkan monitoring..."]. Proyek ini dibangun untuk [sebutkan target pengguna atau masalah yang diselesaikan, misal: "karyawan perusahaan X", "klien", "admin"].
-
-
-*(Opsional: Tambahkan screenshot tampilan aplikasi Anda di sini)*
+Aplikasi Hokben Vehicle Booking System adalah sebuah sistem booking berbasis web yang dirancang untuk Peminjaman mobil untuk internal perusahaan. Proyek ini dibangun sebagai langkah digitalisasi dari Perusahaan PT.Eka Boga Inti.
 
 ---
 
@@ -15,12 +11,10 @@ Aplikasi [Nama Proyek] adalah sebuah sistem booking berbasis web yang dirancang 
 Berikut adalah beberapa fitur kunci dari aplikasi ini:
 
 * 🔑 **Autentikasi Pengguna:** Proses login, register, dan lupa password yang aman.
-* 👤 **Manajemen Peran (Roles):** Sistem dengan beberapa level akses (misal: Admin, Manajer, Karyawan).
-* 📅 **Sistem Booking:** Pengguna dapat membuat, melihat, mengedit, dan membatalkan pemesanan.
-* ✅ **Alur Persetujuan (Approval):** Pemesanan memerlukan persetujuan dari Admin atau Manajer.
-* 📊 **Dashboard Admin:** Halaman khusus admin untuk mengelola data master (pengguna, kendaraan, ruangan, dll) dan melihat statistik.
-* 📧 **Notifikasi Email:** Pemberitahuan otomatis via email untuk status booking (pending, disetujui, ditolak).
-* ... [Tambahkan fitur keren lainnya]
+* 👤 **Manajemen Peran (Roles):** Sistem dengan beberapa level akses diantaranya karyawa, admin & security.
+* 📅 **Sistem Booking:** Pengguna dapat membuat dan melihat pemesanan.
+* ✅ **Alur Persetujuan (Approval):** Pemesanan memerlukan persetujuan dari Admin.
+* 📊 **Dashboard Admin:** Halaman khusus admin untuk mengelola data master (pengguna, kendaraan).
 
 ---
 
@@ -28,11 +22,10 @@ Berikut adalah beberapa fitur kunci dari aplikasi ini:
 
 Proyek ini dibangun menggunakan tumpukan teknologi modern:
 
-* **Backend:** [Contoh: Laravel 10]
-* **Frontend:** [Contoh: Blade & Tailwind CSS / React / Vue.js]
-* **Database:** [Contoh: MySQL / PostgreSQL]
-* **Server:** [Contoh: Apache / Nginx]
-* **Lainnya:** [Contoh: REST API, Composer, NPM, dll]
+* **Backend:** Laravel 10
+* **Frontend:** Blade & Tailwind CSS
+* **Database:** MySQL
+* **Server:**  Apache
 
 ---
 
@@ -43,21 +36,21 @@ Ikuti langkah-langkah berikut untuk menjalankan proyek ini di lingkungan lokal A
 ### Prasyarat
 
 Pastikan Anda sudah menginstal perangkat lunak berikut:
-* [Contoh: PHP 8.1+]
-* [Contoh: Composer]
-* [Contoh: Node.js & NPM]
-* [Contoh: Database (MySQL/PostgreSQL)]
+* PHP 8.1+
+* Composer
+* Node.js & NPM
+* Database (MySQL)
 
 ### Langkah-langkah Instalasi
 
 1.  **Clone repositori:**
     ```bash
-    git clone [https://github.com/](https://github.com/)[username-anda]/[nama-repo].git
+    git clone https://github.com/rnggaul/pinjam-mobil.git
     ```
 
 2.  **Masuk ke direktori proyek:**
     ```bash
-    cd [nama-repo]
+    cd pimjam-mobil
     ```
 
 3.  **Install dependensi backend:**
@@ -87,9 +80,9 @@ Pastikan Anda sudah menginstal perangkat lunak berikut:
     DB_CONNECTION=mysql
     DB_HOST=127.0.0.1
     DB_PORT=3306
-    DB_DATABASE=[nama_database_anda]
-    DB_USERNAME=[username_db_anda]
-    DB_PASSWORD=[password_db_anda]
+    DB_DATABASE=carbooking
+    DB_USERNAME=root
+    DB_PASSWORD=
     ```
 
 8.  **Jalankan migrasi dan seeder database:**
@@ -111,14 +104,12 @@ Aplikasi sekarang dovrebbe berjalan di `http://localhost:8000`.
 Setelah instalasi, Anda dapat mengakses aplikasi.
 
 * **Akun Admin:**
-    * Email: `admin@example.com`
-    * Password: `password`
+    * Email: `admin@gmail.com`
+    * Password: `adminadmin`
 
 * **Akun User:**
-    * Email: `user@example.com`
-    * Password: `password`
-
-[Jelaskan alur penggunaan dasar di sini. Misalnya, "Login sebagai user, pergi ke halaman 'Booking', pilih tanggal, dan klik 'Submit'. Kemudian login sebagai admin untuk menyetujui booking tersebut di halaman 'Dashboard'."]
+    * Email: `ladu@gmail.com`
+    * Password: `12345678`
 
 ---
 
