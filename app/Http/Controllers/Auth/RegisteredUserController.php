@@ -40,13 +40,15 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
             'id_divisi' => ['required', 'exists:master_divisi,id_divisi'],
             'g-recaptcha-response' => ['required', 'recaptcha'],
         ], [
             'g-recaptcha-response.required' => 'Anda harus mencentang kotak "I\'m not a robot".',
             'g-recaptcha-response.recaptcha' => 'Verifikasi CAPTCHA gagal. Silakan coba lagi.',
             'id_divisi.required' => 'Anda harus memilih divisi.',
+            'password.regex' => 'Password harus memiliki minimal 8 karakter, kombinasi huruf besar, huruf kecil, angka, dan simbol.',
         ]);
 
         $user = User::create([

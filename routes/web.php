@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminBookingController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\SecurityController;
+use App\Http\Controllers\DriverController;
 
 
 /*
@@ -51,6 +52,7 @@ Route::middleware('auth')->group(function () {
         //Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.index');
         Route::resource('divisi', DivisiController::class);
         Route::resource('kendaraan', KendaraanController::class);
+        Route::resource('driver', DriverController::class);
 
         Route::get('/admin/bookings', [AdminBookingController::class, 'index'])->name('admin.booking.index');
         Route::post('/admin/bookings/update/{booking}', [AdminBookingController::class, 'updateStatus'])->name('admin.booking.updateStatus');

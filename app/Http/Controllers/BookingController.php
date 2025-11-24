@@ -17,7 +17,7 @@ class BookingController extends Controller
         if (Auth::user()->role == 'security') {
             return redirect()->route('security.dashboard')->with('error', 'Anda tidak bisa melakukan booking.');
         }
-        if (Auth::user()->role == 'admin' || Auth::user()->role == 'superAdmin') {
+        if (Auth::user()->role == 'admin') {
             return redirect()->route('admin.booking.index')->with('error', 'Anda tidak bisa melakukan booking.');
         }
 
@@ -58,12 +58,14 @@ class BookingController extends Controller
             'tanggal_mulai' => 'required|date_format:Y-m-d|after_or_equal:today|before_or_equal:+1 week',
             'tanggal_selesai' => 'required|date_format:Y-m-d|after_or_equal:tanggal_mulai',
             'tujuan'=> 'required|string|max:50',
-            'keperluan'=> 'required|string|max:100', // <-- PERBAIKAN
+            'keperluan'=> 'required|string|max:100', 
+            'pakai_driver' => 'required|in:ya,tidak',
         ], [
             'tanggal_selesai.after_or_equal' => 'Tanggal Selesai harus sama atau setelah Tanggal Mulai.',
             'tanggal_mulai.before_or_equal' => 'Anda hanya dapat memesan maksimal 7 hari dari sekarang.', 
             'tujuan.required' => 'Tujuan perjalanan wajib diisi.',
             'keperluan.required' => 'keperluan perjalanan wajib diisi.', 
+            'pakai_driver.required' => 'Anda harus memilih opsi penggunaan driver.',
         ]);
 
         // 2. Ambil ID user
@@ -80,6 +82,8 @@ class BookingController extends Controller
             'status' => 'pending', 
             'tujuan' => $request->tujuan,
             'keperluan' => $request->keperluan, 
+            'pakai_driver' => $request->pakai_driver,
+            'driver_id' => $request->driver_id ? $request->driver_id : null,
         ]);
 
         // 4. Redirect
@@ -101,7 +105,7 @@ class BookingController extends Controller
         $filters = $request->query();
 
         $query = Booking::where('user_id', Auth::id())
-                            ->with(['kendaraan'])
+                            ->with(['kendaraan','driver'])
                             ->latest('tanggal_mulai');
 
         if ($request->filled('tanggal_mulai') && $request->filled('tanggal_selesai')) {

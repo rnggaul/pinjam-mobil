@@ -26,6 +26,8 @@ return new class extends Migration
             $table->datetime('jam_masuk')->nullable();
             $table->text('tujuan')->nullable();
             $table->text('keperluan')->nullable();
+            $table->enum('pakai_driver',['ya','tidak'])->default('tidak');
+            $table->integer('driver_id')->nullable()->index('driver_id');
 
             $table->index(['user_id'], 'user_id_2');
         });

@@ -8,6 +8,7 @@ use App\Models\Booking;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\BookingsHistoryExport;
+use App\Models\Driver;
 
 class AdminBookingController extends Controller
 {
@@ -15,11 +16,17 @@ class AdminBookingController extends Controller
     {
         // mengambil semua booking dengan status 'pending' lalu mengirimkan ke view
         $pendingBookings = Booking::where('status', 'pending')
-                                    ->with(['user', 'kendaraan'])
-                                    ->latest('tanggal_mulai')
-                                    ->paginate(10);
+            ->with(['user', 'kendaraan'])
+            ->latest('tanggal_mulai')
+            ->paginate(10);
 
-        return view('admin.booking.index', compact('pendingBookings'));
+        $drivers = Driver::all();
+
+        $busySchedules = Booking::whereIn('status', ['approved',])
+            ->whereNotNull('driver_id')
+            ->get();
+
+        return view('admin.booking.index', compact('pendingBookings', 'drivers', 'busySchedules'));
     }
 
     public function updateStatus(Request $request, Booking $booking)
@@ -28,7 +35,16 @@ class AdminBookingController extends Controller
         $request->validate([
             'status' => 'required|in:approved,rejected',
             'note' => 'required_if:status,rejected|string|nullable|max:1000',
-            'driver' => 'nullable|string|max:50',
+            'driver_id' => [
+                'nullable',
+                // Aturan kustom: Wajib jika approve & butuh supir
+                function ($attribute, $value, $fail) use ($request, $booking) {
+                    if ($request->status == 'approved' && $booking->pakai_driver == 'ya' && empty($value)) {
+                        $fail('Anda wajib memilih driver karena user memintanya.');
+                    }
+                },
+                'exists:master_driver,driver_id'
+            ]
         ], [
             'note.required_if' => 'Alasan penolakan wajib diisi jika me-reject booking.'
         ]);
@@ -41,11 +57,17 @@ class AdminBookingController extends Controller
         // 3. Jika statusnya 'rejected', tambahkan 'note' ke data
         if ($request->status == 'rejected') {
             $dataToUpdate['note'] = $request->note;
+            // Reset driver jika direject
+            $dataToUpdate['driver_id'] = null;
         }
 
         // 4. Jika statusnya 'approved' dan ada input 'driver', tambahkan 'driver' ke data
-        if ($request->status == 'approved' && $request->filled('driver')) {
-            $dataToUpdate['driver'] = $request->driver;
+        if ($request->status == 'approved') {
+            // LANGSUNG AMBIL DARI FORM
+            // Jika form mengirim driver_id, simpan. Jika kosong, biarkan (atau null).
+            if ($request->filled('driver_id')) {
+                $dataToUpdate['driver_id'] = $request->driver_id;
+            }
         }
 
         // 5. Update booking dengan SEMUA data (status + note)
@@ -63,11 +85,11 @@ class AdminBookingController extends Controller
 
         // 2. Mulai bangun kueri, jangan langsung ->get()
         $query = Booking::where('status', '!=', 'pending')
-                            ->with(['user', 'kendaraan'])
-                            ->latest('tanggal_mulai');
+            ->with(['user', 'kendaraan'])
+            ->latest('tanggal_mulai');
 
         // 3. Terapkan filter HANYA JIKA user mengisinya
-        
+
         // Filter Tanggal
         if ($request->filled('tanggal_mulai') && $request->filled('tanggal_selesai')) {
             $reqMulai = Carbon::parse($request->tanggal_mulai)->startOfDay();
@@ -87,7 +109,7 @@ class AdminBookingController extends Controller
         if ($request->filled('nopol')) {
             // Ganti 'nopol' dengan 'nomor_polisi' jika itu nama kolom Anda
             $query->whereHas('kendaraan', function ($q) use ($request) {
-                $q->where('nopol', 'like', '%' . $request->nopol . '%'); 
+                $q->where('nopol', 'like', '%' . $request->nopol . '%');
             });
         }
 

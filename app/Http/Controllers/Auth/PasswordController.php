@@ -17,7 +17,10 @@ class PasswordController extends Controller
     {
         $validated = $request->validateWithBag('updatePassword', [
             'current_password' => ['required', 'current_password'],
-            'password' => ['required', Password::defaults(), 'confirmed'],
+            'password' => ['required', 'confirmed', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
+        ],[
+                        'password.regex' => 'Password harus memiliki minimal 8 karakter, kombinasi huruf besar, huruf kecil, angka, dan simbol.',
+
         ]);
 
         $request->user()->update([

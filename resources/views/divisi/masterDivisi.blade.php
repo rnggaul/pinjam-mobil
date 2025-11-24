@@ -2,10 +2,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{-- Bungkus teks dengan tag <a> (link). href mengarah ke route 'admin.dashboard' 'hover:underline' memberikan efek garis bawah saat mouse diarahkan --}}
-            <a href="{{ route('admin.index') }}" class="hover:underline">
-                {{ __('Manajemen Divisi') }}
-            </a>
+            {{ __('Master Divisi') }}
         </h2>
     </x-slot>
 

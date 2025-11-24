@@ -114,8 +114,8 @@
                                     <p class="text-sm">
                                         <strong>Nomor Polisi:</strong> {{ $booking->kendaraan->nopol}}
                                     </p>
-                                    <p class="text-sm">
-                                        <strong>Nama Driver:</strong> {{ $booking->driver ?? 'Tidak ada driver'}}
+                                    <p>
+                                        Nama Driver: {{ $booking->driver->nama_driver ?? 'Belum Ada Driver' }}
                                     </p>
                                     <!-- @if (is_null($booking->km_awal))
                                     {{-- Form KM Awal --}}

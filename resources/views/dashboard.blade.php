@@ -148,6 +148,19 @@
                                     <x-input-error :messages="$errors->get('keperluan')" class="mt-2" />
                                 </div>
 
+                                <div class="mt-4 text-left">
+                                    <x-input-label for="pakai_driver_{{ $kendaraan->mobil_id }}" :value="__('Butuh Supir?')" />
+                                    <select
+                                        name="pakai_driver"
+                                        id="pakai_driver_{{ $kendaraan->mobil_id }}"
+                                        class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                        required>
+                                        <option value="tidak">Tidak (Setir Sendiri)</option>
+                                        <option value="ya">Ya, Butuh Supir</option>
+                                    </select>
+                                    <x-input-error :messages="$errors->get('pakai_driver')" class="mt-2" />
+                                </div>
+
                                 <div class="mt-6 flex justify-end space-x-3">
                                     <button @click="open = false" type="button" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md ...">
                                         Batal

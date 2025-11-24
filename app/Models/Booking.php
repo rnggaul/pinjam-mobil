@@ -39,4 +39,9 @@ class Booking extends Model
     {
         return $this->belongsTo(Kendaraan::class, 'mobil_id', 'mobil_id');
     }
+
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class, 'driver_id', 'driver_id');
+    }
 }

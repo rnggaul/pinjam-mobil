@@ -1,5 +1,9 @@
 <x-app-layout>
-
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Manajemen Booking') }}
+        </h2>
+    </x-slot>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
@@ -86,22 +90,92 @@
                                                             Setujui Booking #{{ $booking->booking_id }}
                                                         </h3>
 
-                                                        {{-- Input Teks Nama Driver (Opsional) --}}
+                                                        {{-- Tampilkan Info Driver --}}
                                                         <div class="mt-4 text-left">
-                                                            <label for="driver_{{ $booking->booking_id }}" class="block text-sm font-medium text-gray-700">
-                                                                Nama Driver (Opsional)
-                                                            </label>
-                                                            <input
-                                                                type="text"
-                                                                id="driver_{{ $booking->booking_id }}"
-                                                                name="driver"
-                                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
-                                                                placeholder="Kosongkan jika tidak ada driver"
-                                                                {{-- Atribut 'required' sudah dihapus --}}
-                                                                value="{{ old('driver') }}">
+                                                            <p class="text-sm text-gray-600 mb-2">
+                                                                User meminta supir:
+                                                                <span class="font-bold {{ $booking->pakai_driver == 'ya' ? 'text-blue-600' : 'text-gray-500' }}">
+                                                                    {{ ucfirst($booking->pakai_driver) }}
+                                                                </span>
+                                                            </p>
 
-                                                            {{-- Error ini hanya akan muncul jika Anda mengirim sesuatu yang BUKAN string --}}
-                                                            <x-input-error :messages="$errors->get('driver')" class="mt-2" />
+                                                            {{-- LOGIKA: Tampilkan Dropdown HANYA JIKA user minta supir --}}
+                                                            @if($booking->pakai_driver == 'ya')
+                                                            <label for="driver_id_{{ $booking->booking_id }}" class="block text-sm font-medium text-gray-700">
+                                                                Pilih Driver yang Tersedia (Wajib)
+                                                            </label>
+
+                                                            <select
+                                                                id="driver_id_{{ $booking->booking_id }}"
+                                                                name="driver_id"
+                                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
+                                                                required>
+
+                                                                <option value="">-- Pilih Driver --</option>
+
+                                                                @foreach ($drivers as $driver)
+                                                                @php
+                                                                // 1. FORMAT TANGGAL SAJA (Hapus Jam/Menit/Detik)
+                                                                $reqStart = \Carbon\Carbon::parse($booking->tanggal_mulai)->format('Y-m-d');
+                                                                $reqEnd = \Carbon\Carbon::parse($booking->tanggal_selesai)->format('Y-m-d');
+
+                                                                $isBusy = $busySchedules->contains(function ($schedule) use ($driver, $reqStart, $reqEnd, $booking) {
+
+                                                                // 2. CEK ID DRIVER (Perhatikan ini!)
+                                                                // Pastikan Anda pakai nama kolom yang BENAR dari tabel Driver.
+                                                                // Biasanya 'id' atau 'id_driver'. Sesuaikan dengan database Anda!
+                                                                // Di sini saya pakai $driver->id_driver (asumsi PK tabel driver adalah id_driver)
+
+                                                                // Cek properti mana yang ada isinya:
+                                                                $driverId = $driver->id_driver ?? $driver->driver_id ?? $driver->id;
+
+                                                                if ($schedule->driver_id != $driverId) {
+                                                                return false; // Kalau orangnya beda, jelas tidak bentrok
+                                                                }
+
+                                                                // 3. ABAIKAN BOOKING DIRI SENDIRI (Kalau lagi edit)
+                                                                if ($schedule->booking_id == $booking->booking_id) {
+                                                                return false;
+                                                                }
+
+                                                                // 4. CEK STATUS (Abaikan yang rejected/cancelled)
+                                                                if (in_array($schedule->status, ['rejected', 'cancelled'])) {
+                                                                return false;
+                                                                }
+
+                                                                // 5. RUMUS BENTROK TANGGAL (Tanpa Jam)
+                                                                $schStart = \Carbon\Carbon::parse($schedule->tanggal_mulai)->format('Y-m-d');
+                                                                $schEnd = \Carbon\Carbon::parse($schedule->tanggal_selesai)->format('Y-m-d');
+
+                                                                // Logika: (Mulai A <= Selesai B) DAN (Selesai A>= Mulai B)
+                                                                    return $schStart <= $reqEnd && $schEnd>= $reqStart;
+                                                                        });
+                                                                        @endphp
+
+                                                                        {{-- Tampilkan hanya jika TIDAK sibuk --}}
+                                                                        @if (!$isBusy)
+                                                                        {{-- Pastikan value ini sesuai PK tabel driver (id_driver atau driver_id) --}}
+                                                                        <option value="{{ $driver->id_driver ?? $driver->driver_id }}">
+                                                                            {{ $driver->nama_driver }}
+                                                                        </option>
+                                                                        @endif
+                                                                        @endforeach
+
+                                                            </select>
+
+                                                            {{-- Pesan kecil jika tidak ada driver muncul --}}
+                                                            <p class="text-xs text-gray-500 mt-1">
+                                                                * Driver yang sedang bertugas di tanggal ini ({{ $booking->tanggal_mulai->format('d/m') }} - {{ $booking->tanggal_selesai->format('d/m') }}) tidak akan muncul.
+                                                            </p>
+
+                                                            <x-input-error :messages="$errors->get('driver_id')" class="mt-2" />
+
+                                                            @else
+                                                            {{-- Jika TIDAK butuh supir --}}
+                                                            <div class="p-2 bg-green-50 border border-green-200 rounded text-sm text-green-700">
+                                                                Unit ini dipinjam tanpa supir (Lepas Kunci).
+                                                            </div>
+                                                            @endif
                                                         </div>
 
                                                         <div class="mt-6 flex justify-end space-x-3">
