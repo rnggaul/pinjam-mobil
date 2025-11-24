@@ -20,14 +20,13 @@ return new class extends Migration
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
             $table->text('note')->nullable();
-            $table->text('driver')->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected', 'finish','running']);
-            $table->datetime('jam_keluar')->nullable();
-            $table->datetime('jam_masuk')->nullable();
-            $table->text('tujuan')->nullable();
-            $table->text('keperluan')->nullable();
-            $table->enum('pakai_driver',['ya','tidak'])->default('tidak');
-            $table->integer('driver_id')->nullable()->index('driver_id');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'finish', 'running']);
+            $table->dateTime('jam_masuk')->nullable();
+            $table->dateTime('jam_keluar')->nullable();
+            $table->string('tujuan', 50);
+            $table->string('keperluan', 100);
+            $table->enum('pakai_driver', ['ya', 'tidak'])->default('tidak');
+            $table->integer('driver_id')->nullable()->index('id_driver');
 
             $table->index(['user_id'], 'user_id_2');
         });
