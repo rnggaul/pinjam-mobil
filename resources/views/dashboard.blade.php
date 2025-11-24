@@ -114,7 +114,12 @@
                         <div @click.away="open = false" class="relative z-10 w-full max-w-lg p-6 bg-white rounded-lg shadow-xl">
 
                             {{-- Form sekarang ada di dalam modal --}}
-                            <form action="{{ route('booking.store') }}" method="POST">
+                            {{-- 1. Tambahkan x-data dan @submit di tag FORM --}}
+                            <form
+                                x-data="{ loading: false }"
+                                @submit="loading = true"
+                                action="{{ route('booking.store') }}"
+                                method="POST">
                                 @csrf
                                 <input type="hidden" name="mobil_id" value="{{ $kendaraan->mobil_id }}">
                                 <input type="hidden" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}">
@@ -162,14 +167,30 @@
                                 </div>
 
                                 <div class="mt-6 flex justify-end space-x-3">
-                                    <button @click="open = false" type="button" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md ...">
+                                    <button @click="open = false" type="button" class="inline-flex items-center px-4 py-2 bg-red-600 border border-gray-300 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500">
                                         Batal
                                     </button>
-                                    <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500">
-                                        Konfirmasi Pesanan
+
+                                    {{-- 2. Modifikasi TOMBOL SUBMIT --}}
+                                    <button
+                                        type="submit"
+                                        :disabled="loading"
+                                        :class="{ 'opacity-50 cursor-not-allowed': loading }"
+                                        class="w-full inline-flex items-center justify-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500 transition ease-in-out duration-150">
+                                        {{-- Tampilkan teks ini jika BELUM loading --}}
+                                        <span x-show="!loading">Konfirmasi Pesanan</span>
+
+                                        {{-- Tampilkan teks ini jika SEDANG loading --}}
+                                        <span x-show="loading" class="flex items-center">
+                                            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            Memproses...
+                                        </span>
                                     </button>
                                 </div>
-                            </form>
+                            </form> 
                         </div>
                     </div>
                 </div>

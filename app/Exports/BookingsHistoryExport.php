@@ -102,7 +102,7 @@ class BookingsHistoryExport implements FromQuery, WithHeadings, WithMapping
             $booking->km_akhir ?? 'Belum ada KM',
             $booking->jam_masuk ?? 'Belum ada jam',
             $totalKm,
-            $booking->driver,
+            $booking->driver->nama_driver ?? 'Tidak ada driver',
             $booking->tujuan,
             $booking->keperluan,
             ucfirst($booking->status),

@@ -117,7 +117,7 @@
                                             {{ $booking->jam_masuk ?? '-'}} 
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            {{ $booking->driver ?? 'tidak ada driver'}} 
+                                            {{ $booking->driver->nama_driver ?? 'tidak ada driver'}} 
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             {{ $booking->tujuan ?? '-'}} 
