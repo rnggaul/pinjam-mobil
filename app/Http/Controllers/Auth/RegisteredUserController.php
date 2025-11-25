@@ -40,29 +40,27 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'password' => ['required', 'confirmed', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
             'id_divisi' => ['required', 'exists:master_divisi,id_divisi'],
-            'g-recaptcha-response' => ['required', 'recaptcha'],
+            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            // 'password' => ['required', 'confirmed', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
+            // 'g-recaptcha-response' => ['required', 'recaptcha'],
         ], [
-            'g-recaptcha-response.required' => 'Anda harus mencentang kotak "I\'m not a robot".',
-            'g-recaptcha-response.recaptcha' => 'Verifikasi CAPTCHA gagal. Silakan coba lagi.',
             'id_divisi.required' => 'Anda harus memilih divisi.',
-            'password.regex' => 'Password harus memiliki minimal 8 karakter, kombinasi huruf besar, huruf kecil, angka, dan simbol.',
+            // 'g-recaptcha-response.required' => 'Anda harus mencentang kotak "I\'m not a robot".',
+            // 'g-recaptcha-response.recaptcha' => 'Verifikasi CAPTCHA gagal. Silakan coba lagi.',
+            // 'password.regex' => 'Password harus memiliki minimal 8 karakter, kombinasi huruf besar, huruf kecil, angka, dan simbol.',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
-            //'id_divisi' => 1,
+            'password' => Hash::make('12345678'), // Set password default
             'id_divisi' => $request->id_divisi,
+            'must_change_password' => true,
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect(RouteServiceProvider::HOME);
+        return back()->with('status', 'User berhasil dibuat dengan password default: 12345678');
     }
 }

@@ -4,11 +4,12 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\DivisiController;
-use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminBookingController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\SecurityController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\ForcePasswordChangeController;
 
 
 /*
@@ -45,6 +46,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/history', [BookingController::class, 'history'])->name('history');
     Route::post('/booking/start/{booking}', [BookingController::class, 'startBooking'])->name('booking.start');
     Route::post('/booking/finish/{booking}', [BookingController::class, 'finishBooking'])->name('booking.finish');
+    // Force Password Change Routes
+    Route::get('/change-password', [ForcePasswordChangeController::class, 'edit'])->name('password.change.form');
+    Route::post('/change-password', [ForcePasswordChangeController::class, 'update'])->name('password.change.update');
 
 
 
@@ -58,6 +62,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/bookings/update/{booking}', [AdminBookingController::class, 'updateStatus'])->name('admin.booking.updateStatus');
         Route::get('/admin/bookings/history', [AdminBookingController::class, 'history'])->name('admin.booking.history');
         Route::get('/admin/bookings/export', [AdminBookingController::class, 'exportHistory'])->name('admin.booking.export');
+
+        Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
+
+        Route::post('register', [RegisteredUserController::class, 'store']);
     });
     Route::middleware('security')->group(function () {
         // Halaman utama security (menampilkan daftar + filter)

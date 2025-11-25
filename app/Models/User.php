@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'id_divisi',
+        'must_change_password',
     ];
 
     /**

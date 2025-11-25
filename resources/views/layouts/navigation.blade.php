@@ -77,6 +77,10 @@
                                     {{ __('Riwayat Booking') }}
                                 </x-dropdown-link>
 
+                                <x-dropdown-link :href="route('register')">
+                                    {{ __('Register') }}
+                                </x-dropdown-link>
+
                                 {{-- Pemisah --}}
                                 <div class="border-t border-gray-200"></div>
 
@@ -134,6 +138,10 @@
 
                                 <x-dropdown-link :href="route('admin.booking.history')">
                                     {{ __('Riwayat Booking') }}
+                                </x-dropdown-link>
+
+                                <x-dropdown-link :href="route('register')">
+                                    {{ __('Register') }}
                                 </x-dropdown-link>
 
                                 {{-- Pemisah --}}
