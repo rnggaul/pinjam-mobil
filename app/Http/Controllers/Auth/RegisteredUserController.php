@@ -41,6 +41,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'id_divisi' => ['required', 'exists:master_divisi,id_divisi'],
+            'role' => ['required', 'in:user,admin,security'],
             // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
             // 'password' => ['required', 'confirmed', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
             // 'g-recaptcha-response' => ['required', 'recaptcha'],
@@ -57,6 +58,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make('12345678'), // Set password default
             'id_divisi' => $request->id_divisi,
             'must_change_password' => true,
+            'role' => $request->role,
         ]);
 
         event(new Registered($user));

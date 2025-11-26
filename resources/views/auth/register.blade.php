@@ -18,10 +18,6 @@
 
         <!-- Divisi -->
         <div class="mt-4">
-            {{--
-      Label 'for' saya ubah menjadi 'id_divisi' 
-      agar cocok dengan id <select> untuk aksesibilitas 
-    --}}
             <x-input-label for="id_divisi" :value="__('Divisi')" />
 
             <select id="id_divisi" name="id_divisi" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
@@ -38,6 +34,23 @@
 
             {{-- Ini untuk menampilkan error validasi jika 'id_divisi' tidak diisi --}}
             <x-input-error :messages="$errors->get('id_divisi')" class="mt-2" />
+        </div>
+
+        <div class="mt-4">
+            <x-input-label for="role" :value="__('Role')" />
+
+            <select id="role" name="role" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+
+                {{-- Opsi default --}}
+                <option value="" disabled selected>Pilih Role</option>
+                <option value="user">User</option>
+                <option value="security">security</option>
+                <option value="admin">admin</option>
+
+            </select>
+
+            {{-- Ini untuk menampilkan error validasi jika 'role' tidak diisi --}}
+            <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
 
 
