@@ -21,6 +21,7 @@ return new class extends Migration
             $table->enum('role', ['user', 'admin', 'security', 'superAdmin'])->default('user');
             $table->rememberToken();
             $table->timestamps();
+            $table->boolean('must_change_password')->default(true);
         });
     }
 
