@@ -104,12 +104,9 @@ Aplikasi sekarang dovrebbe berjalan di `http://localhost:8000`.
 Setelah instalasi, Anda dapat mengakses aplikasi.
 
 * **Akun Admin:**
-    * Email: `admin@gmail.com`
-    * Password: `adminadmin`
+    * Email: `superadmin@gmail.com`
+    * Password: `SuperAdmin123!`
 
-* **Akun User:**
-    * Email: `ladu@gmail.com`
-    * Password: `12345678`
 
 ---
 
