@@ -67,7 +67,10 @@
                             @endforelse
                         </tbody>
                     </table>
-
+                    <div class="mt-6">
+                        {{-- 'appends' akan membawa filter Anda saat pindah halaman --}}
+                        {{ $kendaraans->appends(request()->query())->links() }}
+                    </div>
                 </div>
             </div>
         </div>

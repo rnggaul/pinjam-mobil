@@ -13,7 +13,7 @@ class KendaraanController extends Controller
     public function index()
     {
         //
-        $kendaraans = Kendaraan::all();
+        $kendaraans = Kendaraan::paginate(10);
         return view('kendaraan.masterKendaraan', compact('kendaraans'));
     }
 

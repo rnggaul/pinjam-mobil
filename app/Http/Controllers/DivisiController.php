@@ -13,7 +13,7 @@ class DivisiController extends Controller
     public function index()
     {
         // Kode ini sudah benar
-        $divisis = \App\Models\Divisi::all();
+        $divisis = \App\Models\Divisi::paginate(10);
         return view('divisi.masterDivisi', compact('divisis'));
     }
 
