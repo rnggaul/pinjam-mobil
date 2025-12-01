@@ -26,7 +26,8 @@ class ForcePasswordChangeController extends Controller
                 'regex:/[a-z]/',      // Huruf kecil
                 'regex:/[A-Z]/',      // Huruf besar
                 'regex:/[0-9]/',      // Angka
-                'regex:/[@$!%*#?&]/', // Simbol unik
+                //'regex:/[@$!%*#?&]/', // Simbol unik
+                'regex:/[~`!@#$%^&*()_\-+={}\[\]|\\:;"<>,.?\/]/'
             ],
         ], [
             'password.regex' => 'Password harus mengandung huruf besar, kecil, angka, dan simbol.',

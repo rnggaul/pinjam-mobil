@@ -34,15 +34,21 @@ class KendaraanController extends Controller
         // 1 validasi
         $request->validate([
             'nama_kendaraan' => 'required|string|max:255',
-            'nopol' => 'required|string|max:20|unique:master_kendaraan,nopol',
+            'nopol' => [
+                'required',
+                'string',
+                'max:11',
+                'regex:/^[A-Z]{1,2}\s[0-9]{1,4}\s[A-Z]{1,3}$/',
+            ],
             'jenis_mobil' => 'required|in:Sedan,LCGC,SUV,MPV',
+        ], [
+            'nopol.regex' => 'Nomor polisi tidak valid. Format yang benar: "AB 1234 CD".',
         ]);
-            // 2 buat data baru
-            Kendaraan::create($request->all());
+        // 2 buat data baru
+        Kendaraan::create($request->all());
 
-            // 3 redirect
-            return redirect()->route('kendaraan.index')->with('success', 'Kendaraan berhasil ditambahkan. ');
-
+        // 3 redirect
+        return redirect()->route('kendaraan.index')->with('success', 'Kendaraan berhasil ditambahkan. ');
     }
 
     /**
@@ -73,12 +79,12 @@ class KendaraanController extends Controller
             'jenis_mobil' => 'required|in:Sedan,LCGC,SUV,MPV',
         ]);
 
-         // 2 buat data baru
-            //Kendaraan::create($request->all());
-            $kendaraan->update($request->all());
+        // 2 buat data baru
+        //Kendaraan::create($request->all());
+        $kendaraan->update($request->all());
 
-            // 3 redirect
-            return redirect()->route('kendaraan.index')->with('success', 'Kendaraan berhasil diubah. ');
+        // 3 redirect
+        return redirect()->route('kendaraan.index')->with('success', 'Kendaraan berhasil diubah. ');
     }
 
     /**
@@ -87,7 +93,7 @@ class KendaraanController extends Controller
     public function destroy(Kendaraan $kendaraan)
     {
         //
-        try{
+        try {
             $kendaraan->delete();
             return redirect()->route('kendaraan.index')->with('success', 'Kendaraan berhasil dihapus.');
         } catch (\Exception $e) {

@@ -8,9 +8,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             {{-- Pesan Sukses --}}
-            @if (session('success'))
+            @if (session('success1'))
             <div class="mb-4 p-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
-                {{ session('success') }}
+                {{ session('success1') }}
             </div>
             @endif
 

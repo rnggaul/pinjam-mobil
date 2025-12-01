@@ -38,8 +38,8 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'name' => ['required', 'string', 'max:20'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:50', 'unique:' . User::class],
             'id_divisi' => ['required', 'exists:master_divisi,id_divisi'],
             'role' => ['required', 'in:user,admin,security'],
             // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
@@ -47,6 +47,8 @@ class RegisteredUserController extends Controller
             // 'g-recaptcha-response' => ['required', 'recaptcha'],
         ], [
             'id_divisi.required' => 'Anda harus memilih divisi.',
+            'name.max' => 'Nama maksimal 20 karakter.',
+            'email.max' => 'Email maksimal 50 karakter.',
             // 'g-recaptcha-response.required' => 'Anda harus mencentang kotak "I\'m not a robot".',
             // 'g-recaptcha-response.recaptcha' => 'Verifikasi CAPTCHA gagal. Silakan coba lagi.',
             // 'password.regex' => 'Password harus memiliki minimal 8 karakter, kombinasi huruf besar, huruf kecil, angka, dan simbol.',
@@ -63,6 +65,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        return back()->with('status', 'User berhasil dibuat dengan password default: 12345678');
+        //return back()->with('status', 'User berhasil dibuat dengan password default: 12345678');
+        return redirect()->route('admin.booking.index')->with('success1', 'User berhasil dibuat dengan password default: 12345678');
     }
 }

@@ -23,7 +23,7 @@
             <select id="id_divisi" name="id_divisi" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
 
                 {{-- Opsi default --}}
-                <option value="">Pilih Divisi</option>
+                <option value="" disabled selected>Pilih Divisi</option>
 
                 {{-- Loop data dari database --}}
                 @foreach ($divisions as $divisi)

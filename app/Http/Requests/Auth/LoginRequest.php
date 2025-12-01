@@ -33,6 +33,18 @@ class LoginRequest extends FormRequest
         ];
     }
 
+    // public function rules(): array
+    // {
+    //     return [
+    //         'email' => ['required', 'string', 'email'],
+    //         'password' => ['required', 'string'],
+    //         //'g-recaptcha-response' => ['required', 'recaptcha'],
+    //     ];
+
+    //     if (env('ENABLE_CAPTCHA', true)) {
+    //         $rules['g-recaptcha-response'] = ['required', 'recaptcha'];
+    //     }
+    // }
     /**
      * Attempt to authenticate the request's credentials.
      *
@@ -81,7 +93,7 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 
     public function messages(): array
@@ -89,7 +101,7 @@ class LoginRequest extends FormRequest
         return [
             // Pesan untuk 'g-recaptcha-response' jika tidak diisi
             'g-recaptcha-response.required' => 'Anda harus mencentang kotak "I\'m not a robot".',
-            
+
             // Pesan untuk 'g-recaptcha-response' jika Google bilang tidak valid
             'g-recaptcha-response.recaptcha' => 'Verifikasi CAPTCHA gagal. Silakan coba lagi.',
         ];
