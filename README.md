@@ -106,6 +106,9 @@ Setelah instalasi, Anda dapat mengakses aplikasi.
 * **Akun Admin:**
     * Email: `superadmin@gmail.com`
     * Password: `SuperAdmin123!`
+ 
+* **Default Password User:**
+  * Password: `12345678`
 
 
 ---
