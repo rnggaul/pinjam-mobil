@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Divisi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DivisiController extends Controller
 {
@@ -17,34 +18,31 @@ class DivisiController extends Controller
         return view('divisi.masterDivisi', compact('divisis'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        // Kode ini sudah benar
-        return view('divisi.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * PERBAIKAN ADA DI BAWAH INI
-     */
     public function store(Request $request)
     {
-        // 1. Validasi (diubah ke 'nama_divisi' dan ditambah 'unique')
-        $request->validate([
+        // 1. Validasi
+        $validator = Validator::make($request->all(), [
             'nama_divisi' => 'required|string|max:255|unique:master_divisi,nama_divisi',
         ]);
 
-        // 2. Buat data baru (Model 'Divisi' dengan 'D' besar)
+        // Jika validasi gagal
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // 2. Simpan
         Divisi::create([
-            'nama_divisi' => $request->nama_divisi, // (diambil dari $request->nama_divisi)
+            'nama_divisi' => $request->nama_divisi
         ]);
 
-        // 3. Redirect (Kode Anda sudah benar)
-        return redirect()->route('divisi.index')->with('success', 'Divisi berhasil ditambahkan.');
+        // 3. Return JSON Sukses
+        return response()->json([
+            'success' => true,
+            'message' => 'Divisi berhasil ditambahkan!'
+        ]);
     }
 
     /**
@@ -69,19 +67,28 @@ class DivisiController extends Controller
      */
     public function update(Request $request, Divisi $divisi)
     {
-        // Kode Anda di sini sudah benar
-        // 1. Validasi
-        $request->validate([
+        // 1. Validasi (Abaikan ID diri sendiri agar tidak error "Unique")
+        $validator = Validator::make($request->all(), [
             'nama_divisi' => 'required|string|max:255|unique:master_divisi,nama_divisi,' . $divisi->id_divisi . ',id_divisi',
         ]);
 
-        // 2. Update data
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // 2. Update Data
         $divisi->update([
-            'nama_divisi' => $request->nama_divisi,
+            'nama_divisi' => $request->nama_divisi
         ]);
 
-        // 3. Redirect
-        return redirect()->route('divisi.index')->with('success', 'Divisi berhasil diupdate.');
+        // 3. Return JSON
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil diperbarui!'
+        ]);
     }
 
     /**

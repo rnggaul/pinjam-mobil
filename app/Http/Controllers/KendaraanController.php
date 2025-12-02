@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kendaraan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class KendaraanController extends Controller
 {
@@ -29,27 +30,55 @@ class KendaraanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
-        // 1 validasi
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'nama_kendaraan' => 'required|string|max:255',
             'nopol' => [
+                'unique:master_kendaraan',
                 'required',
                 'string',
                 'max:11',
                 'regex:/^[A-Z]{1,2}\s[0-9]{1,4}\s[A-Z]{1,3}$/',
             ],
             'jenis_mobil' => 'required|in:Sedan,LCGC,SUV,MPV',
-        ], [
+        ], [[
             'nopol.regex' => 'Nomor polisi tidak valid. Format yang benar: "AB 1234 CD".',
-        ]);
-        // 2 buat data baru
+            'nopol.unique' => 'Nomor polisi sudah terdaftar.',
+        ]]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+        }
+
         Kendaraan::create($request->all());
 
-        // 3 redirect
-        return redirect()->route('kendaraan.index')->with('success', 'Kendaraan berhasil ditambahkan. ');
+        return response()->json(['success' => true, 'message' => 'Kendaraan berhasil ditambahkan!']);
     }
+    // public function store(Request $request)
+    // {
+    //     // 1 validasi
+    //     $request->validate([
+    //         'nama_kendaraan' => 'required|string|max:255',
+    //         'nopol' => [
+    //             'unique:master_kendaraan',
+    //             'required',
+    //             'string',
+    //             'max:11',
+    //             'regex:/^[A-Z]{1,2}\s[0-9]{1,4}\s[A-Z]{1,3}$/',
+    //         ],
+    //         'jenis_mobil' => 'required|in:Sedan,LCGC,SUV,MPV',
+    //     ], [
+    //         'nopol.regex' => 'Nomor polisi tidak valid. Format yang benar: "AB 1234 CD".',
+    //         'nopol.unique' => 'Nomor polisi sudah terdaftar.',
+    //     ]);
+    //     // 2 buat data baru
+    //     Kendaraan::create($request->all());
+
+    //     // 3 redirect
+    //     return redirect()->route('kendaraan.index')->with('success', 'Kendaraan berhasil ditambahkan. ');
+    // }
 
     /**
      * Display the specified resource.
@@ -71,20 +100,39 @@ class KendaraanController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    // public function update(Request $request, Kendaraan $kendaraan)
+    // {
+    //     // 1 validasi
+    //     $request->validate([
+    //         'nama_kendaraan' => 'required|string|max:255',
+    //         'jenis_mobil' => 'required|in:Sedan,LCGC,SUV,MPV',
+    //     ]);
+
+    //     // 2 buat data baru
+    //     //Kendaraan::create($request->all());
+    //     $kendaraan->update($request->all());
+
+    //     // 3 redirect
+    //     return redirect()->route('kendaraan.index')->with('success', 'Kendaraan berhasil diubah. ');
+    // }
+
     public function update(Request $request, Kendaraan $kendaraan)
     {
-        // 1 validasi
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'nama_kendaraan' => 'required|string|max:255',
             'jenis_mobil' => 'required|in:Sedan,LCGC,SUV,MPV',
+        ],[
+            'nopol.regex' => 'Nomor polisi tidak valid. Format yang benar: "AB 1234 CD".',
+            'nopol.unique' => 'Nomor polisi sudah terdaftar.',
         ]);
 
-        // 2 buat data baru
-        //Kendaraan::create($request->all());
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+        }
+
         $kendaraan->update($request->all());
 
-        // 3 redirect
-        return redirect()->route('kendaraan.index')->with('success', 'Kendaraan berhasil diubah. ');
+        return response()->json(['success' => true, 'message' => 'Data kendaraan berhasil diperbarui!']);
     }
 
     /**

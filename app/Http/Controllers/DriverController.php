@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Driver;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DriverController extends Controller
 {
@@ -20,13 +21,18 @@ class DriverController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_driver' => 'required|string|max:255',
+        $validator = Validator::make($request->all(), [
+            'nama_driver' => 'required|string|max:25|unique:master_driver,nama_driver',
+            // Tambahkan validasi lain jika ada kolom no_hp, sim, dll
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+        }
 
         Driver::create($request->all());
 
-        return redirect()->route('driver.index')->with('success', 'Driver berhasil ditambahkan.');
+        return response()->json(['success' => true, 'message' => 'Driver berhasil ditambahkan!']);
     }
 
     public function edit(Driver $driver)
@@ -36,13 +42,17 @@ class DriverController extends Controller
 
     public function update(Request $request, Driver $driver)
     {
-        $request->validate([
-            'nama_driver' => 'required|string|max:255',
+        $validator = Validator::make($request->all(), [
+            'nama_driver' => 'required|string|max:25|unique:master_driver,nama_driver',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+        }
 
         $driver->update($request->all());
 
-        return redirect()->route('driver.index')->with('success', 'Data driver diperbarui.');
+        return response()->json(['success' => true, 'message' => 'Data driver berhasil diperbarui!']);
     }
 
     public function destroy(Driver $driver)
