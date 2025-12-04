@@ -5,18 +5,39 @@
         </h2>
     </x-slot>
 
+    {{-- STYLE TAMBAHAN AGAR TIDAK KEDIP SAAT RELOAD --}}
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+
     <div class="py-12" 
          x-data="{ 
             showModal: false, 
             isEdit: false, 
             modalTitle: '',
             submitUrl: '',
-            // DEFINISI FORM (Sesuaikan jika ada field lain seperti no_hp)
+            flashMessage: '', // 1. VARIABEL BARU
+            
+            // DEFINISI FORM
             form: { 
                 nama_driver: '' 
             },
+
+            // 2. FUNGSI INIT (Dijalankan otomatis saat halaman dimuat)
+            init() {
+                // Cek apakah ada pesan sukses di sessionStorage (dari reload sebelumnya)
+                if(sessionStorage.getItem('pesanSukses')) {
+                    this.flashMessage = sessionStorage.getItem('pesanSukses');
+                    sessionStorage.removeItem('pesanSukses'); // Hapus agar tidak muncul terus
+                    
+                    // Hilangkan pesan otomatis setelah 5 detik
+                    setTimeout(() => {
+                        this.flashMessage = '';
+                    }, 5000);
+                }
+            },
             
-            // 1. Fungsi Buka Modal Tambah
+            // Fungsi Buka Modal Tambah
             openCreate() {
                 this.showModal = true;
                 this.isEdit = false;
@@ -26,7 +47,7 @@
                 this.clearErrors();
             },
 
-            // 2. Fungsi Buka Modal Edit
+            // Fungsi Buka Modal Edit
             openEdit(item, url) {
                 this.showModal = true;
                 this.isEdit = true;
@@ -36,13 +57,13 @@
                 this.clearErrors();
             },
 
-            // 3. Helper Hapus Pesan Error
+            // Helper Hapus Pesan Error
             clearErrors() {
                 let errorEl = document.getElementById('error-nama_driver');
                 if(errorEl) { errorEl.innerText = ''; errorEl.classList.add('hidden'); }
             },
 
-            // 4. LOGIKA SUBMIT
+            // LOGIKA SUBMIT
             submitForm(event) {
                 let formData = new FormData(event.target);
                 
@@ -61,6 +82,8 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
+                        // 3. SIMPAN PESAN KE BROWSER SEBELUM RELOAD
+                        sessionStorage.setItem('pesanSukses', data.message);
                         window.location.reload();
                     } else {
                         if(data.errors && data.errors.nama_driver) {
@@ -89,6 +112,20 @@
                             class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                             Tambah Driver Baru
                         </button>
+                    </div>
+
+                    {{-- 4. ALERT / FLASH MESSAGE (MUNCUL DI SINI) --}}
+                    <div x-show="flashMessage" 
+                         x-cloak
+                         x-transition.duration.500ms
+                         class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                        <strong class="font-bold">Berhasil!</strong>
+                        <span class="block sm:inline" x-text="flashMessage"></span>
+                        
+                        {{-- Tombol Close X --}}
+                        <span @click="flashMessage = ''" class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer">
+                            <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                        </span>
                     </div>
 
                     {{-- TABEL DATA --}}

@@ -5,15 +5,34 @@
         </h2>
     </x-slot>
 
-    {{-- State Alpine.js: Menyimpan status modal, mode edit, data form, dan URL target --}}
+    {{-- STYLE AGAR TIDAK KEDIP SAAT RELOAD --}}
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+
+    {{-- State Alpine.js --}}
     <div class="py-12"
         x-data="{ 
         showModal: false, 
         isEdit: false, 
         modalTitle: 'Tambah Divisi',
         submitUrl: '',
+        flashMessage: '',
         form: { nama_divisi: '' },
-        
+
+        init() {
+            // Cek apakah ada pesan sukses di sessionStorage (dari reload sebelumnya)
+            if(sessionStorage.getItem('pesanSukses')) {
+                this.flashMessage = sessionStorage.getItem('pesanSukses');
+                sessionStorage.removeItem('pesanSukses'); 
+                
+                // Hilangkan pesan otomatis setelah 5 detik
+                setTimeout(() => {
+                    this.flashMessage = '';
+                }, 5000);
+            }
+        },
+
         // Fungsi Buka Mode Tambah
         openCreate() {
             this.showModal = true;
@@ -34,13 +53,16 @@
             this.clearErrors();
         },
 
-        // Fungsi Reset Error (Helper)
+        // Fungsi Reset Error
         clearErrors() {
-            document.getElementById('error-nama').innerText = '';
-            document.getElementById('error-nama').classList.add('hidden');
+            let errorEl = document.getElementById('error-nama');
+            if(errorEl) {
+                errorEl.innerText = '';
+                errorEl.classList.add('hidden');
+            }
         },
 
-        // LOGIKA SUBMIT FORM (Dipindahkan ke sini agar aman)
+        // LOGIKA SUBMIT FORM
         submitForm(event) {
             let formData = new FormData(event.target);
             let errorText = document.getElementById('error-nama');
@@ -58,17 +80,24 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    // --- BAGIAN INI YANG DITAMBAHKAN ---
+                    // Simpan pesan ke memori browser sebelum reload
+                    sessionStorage.setItem('pesanSukses', data.message);
                     window.location.reload();
+                    // -----------------------------------
                 } else {
                     if(data.errors && data.errors.nama_divisi) {
                         errorText.innerText = data.errors.nama_divisi[0];
                         errorText.classList.remove('hidden');
                     } else {
-                        alert('Error: ' + data.message);
+                        alert('Error: ' + (data.message || 'Terjadi kesalahan'));
                     }
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan sistem.');
+            });
         }
      }">
 
@@ -84,10 +113,18 @@
                         </button>
                     </div>
 
-                    {{-- Alert Session PHP (Opsional/Fallback) --}}
-                    @if (session('success'))
-                    <div class="mb-4 p-4 text-sm text-green-700 bg-green-100 rounded-lg">{{ session('success') }}</div>
-                    @endif
+                    {{-- Alert Flash Message (Alpine) --}}
+                    <div x-show="flashMessage" 
+                         x-cloak
+                         x-transition.duration.500ms
+                         class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                        <strong class="font-bold">Berhasil!</strong>
+                        <span class="block sm:inline" x-text="flashMessage"></span>
+                        
+                        <span @click="flashMessage = ''" class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer">
+                            <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                        </span>
+                    </div>
 
                     {{-- TABEL DATA --}}
                     <table class="min-w-full divide-y divide-gray-200">
@@ -102,20 +139,18 @@
                             @forelse ($divisis as $divisi)
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $loop->iteration }}
-                                    </td>
+                                    {{ $loop->iteration }}
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $divisi->nama_divisi }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-
                                     {{-- TOMBOL EDIT --}}
-                                    {{-- Kita passing object data divisi dan URL update ke fungsi openEdit --}}
                                     <button
                                         @click="openEdit({{ $divisi }}, '{{ route('divisi.update', $divisi) }}')"
                                         class="text-indigo-600 hover:text-indigo-900 mr-4">
                                         Edit
                                     </button>
 
-                                    {{-- Tombol Hapus (Tetap Form Standar) --}}
+                                    {{-- Tombol Hapus --}}
                                     <form action="{{ route('divisi.destroy', $divisi) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin hapus?');">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
@@ -124,7 +159,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada data.</td>
+                                <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada data divisi.</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -137,7 +172,7 @@
             </div>
         </div>
 
-        {{-- ================= MODAL FORM (Create & Edit) ================= --}}
+        {{-- MODAL FORM --}}
         <div x-show="showModal" style="display: none;"
             class="fixed inset-0 z-50 overflow-y-auto" aria-modal="true">
 
@@ -147,13 +182,10 @@
 
                 <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
 
-                    {{-- Form menggunakan event handler khusus JS --}}
-                    {{-- Perhatikan penambahan @submit.prevent --}}
-                    <form id="modalForm" @submit.prevent="submitForm($event)">
+                    <form @submit.prevent="submitForm($event)">
                         @csrf
                         <input type="hidden" name="_method" :value="isEdit ? 'PUT' : 'POST'">
 
-                        {{-- Sisa isi form tetap sama --}}
                         <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <h3 class="text-lg leading-6 font-medium text-gray-900" x-text="modalTitle"></h3>
 
@@ -178,45 +210,4 @@
             </div>
         </div>
     </div>
-
-    {{-- SCRIPT AJAX HANDLER --}}
-    <!-- <script>
-        document.getElementById('modalForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Ambil data Alpine scope untuk mendapatkan URL yang dinamis
-            // 'this' di sini adalah element form HTML
-            // Kita gunakan trik Alpine untuk mengambil data scope dari elemen terdekat
-            let alpineData = Alpine.$data(document.querySelector('[x-data]'));
-            let targetUrl = alpineData.submitUrl;
-
-            let formData = new FormData(this);
-            let errorText = document.getElementById('error-nama');
-            errorText.classList.add('hidden');
-            errorText.innerText = '';
-
-            fetch(targetUrl, {
-                    method: 'POST', // Selalu POST, Laravel membaca _method: PUT dari formData
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.reload();
-                    } else {
-                        if (data.errors && data.errors.nama_divisi) {
-                            errorText.innerText = data.errors.nama_divisi[0];
-                            errorText.classList.remove('hidden');
-                        } else {
-                            alert('Error: ' + data.message);
-                        }
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        });
-    </script> -->
 </x-app-layout>

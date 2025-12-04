@@ -34,7 +34,7 @@ class KendaraanController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nama_kendaraan' => 'required|string|max:255',
+            'nama_kendaraan' => 'required|string|max:30',
             'nopol' => [
                 'unique:master_kendaraan',
                 'required',
@@ -119,8 +119,15 @@ class KendaraanController extends Controller
     public function update(Request $request, Kendaraan $kendaraan)
     {
         $validator = Validator::make($request->all(), [
-            'nama_kendaraan' => 'required|string|max:255',
+            'nama_kendaraan' => 'required|string|max:30',
             'jenis_mobil' => 'required|in:Sedan,LCGC,SUV,MPV',
+            'nopol' => [
+                'unique:master_kendaraan',
+                'required',
+                'string',
+                'max:11',
+                'regex:/^[A-Z]{1,2}\s[0-9]{1,4}\s[A-Z]{1,3}$/',
+            ],
         ],[
             'nopol.regex' => 'Nomor polisi tidak valid. Format yang benar: "AB 1234 CD".',
             'nopol.unique' => 'Nomor polisi sudah terdaftar.',

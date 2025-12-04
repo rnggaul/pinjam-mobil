@@ -21,18 +21,34 @@ class DriverController extends Controller
 
     public function store(Request $request)
     {
+        // 1. Validasi
         $validator = Validator::make($request->all(), [
-            'nama_driver' => 'required|string|max:25|unique:master_driver,nama_driver',
-            // Tambahkan validasi lain jika ada kolom no_hp, sim, dll
+            // Pastikan nama tabel benar 'master_driver'
+            'nama_driver' => 'required|string|max:255|unique:master_driver,nama_driver',
+        ], [
+            // Pesan Error Custom (Opsional)
+            'nama_driver.required' => 'Nama driver wajib diisi.',
+            'nama_driver.unique' => 'Nama driver sudah terdaftar.',
         ]);
 
+        // 2. Cek jika gagal
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
         }
 
-        Driver::create($request->all());
+        // 3. Simpan ke Database
+        Driver::create([
+            'nama_driver' => $request->nama_driver
+        ]);
 
-        return response()->json(['success' => true, 'message' => 'Driver berhasil ditambahkan!']);
+        // 4. Return JSON Sukses
+        return response()->json([
+            'success' => true,
+            'message' => 'Driver baru berhasil ditambahkan!'
+        ]);
     }
 
     public function edit(Driver $driver)
@@ -42,17 +58,33 @@ class DriverController extends Controller
 
     public function update(Request $request, Driver $driver)
     {
+        // 1. Validasi
         $validator = Validator::make($request->all(), [
-            'nama_driver' => 'required|string|max:25|unique:master_driver,nama_driver',
+            // PENTING: Tambahkan ID driver di parameter ke-3 unique rule
+            // Format: unique:nama_tabel,nama_kolom,id_yang_diabaikan
+            'nama_driver' => 'required|string|max:255|unique:master_driver,nama_driver,' . $driver->id,
+        ], [
+            'nama_driver.unique' => 'Nama driver sudah digunakan oleh driver lain.',
         ]);
 
+        // 2. Cek jika gagal
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
         }
 
-        $driver->update($request->all());
+        // 3. Update Data
+        $driver->update([
+            'nama_driver' => $request->nama_driver
+        ]);
 
-        return response()->json(['success' => true, 'message' => 'Data driver berhasil diperbarui!']);
+        // 4. Return JSON Sukses
+        return response()->json([
+            'success' => true,
+            'message' => 'Data driver berhasil diperbarui!'
+        ]);
     }
 
     public function destroy(Driver $driver)

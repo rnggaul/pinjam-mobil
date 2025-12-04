@@ -22,7 +22,7 @@ class DivisiController extends Controller
     {
         // 1. Validasi
         $validator = Validator::make($request->all(), [
-            'nama_divisi' => 'required|string|max:255|unique:master_divisi,nama_divisi',
+            'nama_divisi' => 'required|string|max:35|unique:master_divisi,nama_divisi',
         ]);
 
         // Jika validasi gagal
@@ -69,7 +69,7 @@ class DivisiController extends Controller
     {
         // 1. Validasi (Abaikan ID diri sendiri agar tidak error "Unique")
         $validator = Validator::make($request->all(), [
-            'nama_divisi' => 'required|string|max:255|unique:master_divisi,nama_divisi,' . $divisi->id_divisi . ',id_divisi',
+            'nama_divisi' => 'required|string|max:35|unique:master_divisi,nama_divisi,' . $divisi->id_divisi . ',id_divisi',
         ]);
 
         if ($validator->fails()) {
