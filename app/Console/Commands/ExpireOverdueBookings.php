@@ -28,12 +28,16 @@ class ExpireOverdueBookings extends Command
     {
         $today = Carbon::today();
 
-        $count = Booking::where('status', 'pending')
+        $bookingExpired = Booking::where('status', 'pending')
             ->whereDate('tanggal_mulai', '<', $today)
             ->update(['status' => 'expired']);
 
+
+        $securityExpired = Booking::where('status','approved')
+            ->whereDate('tanggal_selesai', '<', $today)
+            ->update(['status' => 'canceled']);
             
-    $this->info("Berhasil mengubah {$count} status booking menjadi expired.");
+    $this->info("Berhasil mengubah {$bookingExpired} status booking menjadi expired.");
     }
 
 }

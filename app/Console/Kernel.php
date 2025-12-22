@@ -12,9 +12,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
-        $schedule->command('bookings:expire')->daylyAt('00:01');
-        $schedule->command('bookings:notifi-admin')->dailyAt('08:00');
+        $schedule->command('bookings:expire')->dailyAt('00:01');
+        $schedule->command('bookings:notify-admin')->dailyAt('08:00');
+
+        // Testing purposes
+        // $schedule->command('bookings:expire')->everyMinute();
+        // $schedule->command('bookings:notify-admin')->everyMinute();
     }
 
     /**
