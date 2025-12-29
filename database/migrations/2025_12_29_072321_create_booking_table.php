@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
             $table->text('note')->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected', 'finish', 'running', 'expired']);
+            $table->enum('status', ['pending', 'approved', 'rejected', 'finish', 'running', 'expired', 'canceled']);
             $table->dateTime('jam_masuk')->nullable();
             $table->dateTime('jam_keluar')->nullable();
             $table->string('tujuan', 50);

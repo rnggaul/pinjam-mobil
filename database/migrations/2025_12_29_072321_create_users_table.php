@@ -3,8 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 return new class extends Migration
 {
@@ -15,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->integer('id', true);
-            $table->string('name',30);
-            $table->string('email',30)->unique();
+            $table->string('name', 20);
+            $table->string('email', 50)->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->integer('id_divisi')->index('id_divisi');
             $table->string('password');
@@ -25,18 +23,6 @@ return new class extends Migration
             $table->timestamps();
             $table->boolean('must_change_password')->default(true);
         });
-
-        // Menambahkan user default 'superAdmin'
-        DB::table('users')->insert([
-            'name' => 'Super Admin',
-            'email' => 'superadmin@gmail.com',
-            'password' => hash::make('SuperAdmin123!'),
-            'created_at' => now(),
-            'updated_at' => now(),
-            'role' => 'superAdmin',
-            'must_change_password' => false,
-            'id_divisi' => 1,
-        ]);
     }
 
     /**
